@@ -5,11 +5,7 @@ import { motion } from 'framer-motion';
 import { Car } from 'lucide-react';
 import type { Destination } from '@/lib/types';
 
-const picsumSeeds = [
-  'paris-dest', 'nice-dest', 'lyon-dest', 'bordeaux-dest',
-  'marseille-dest', 'toulouse-dest', 'strasbourg-dest', 'lille-dest',
-  'nantes-dest', 'montpellier-dest',
-];
+const fallbackImages = ['/destinations/paris.jpg','/destinations/nice.jpg','/destinations/lyon.jpg','/destinations/bordeaux.jpg','/destinations/marseille.jpg','/destinations/toulouse.jpg','/destinations/strasbourg.jpg','/destinations/lille.jpg','/destinations/nantes.jpg','/destinations/montpellier.jpg'];
 
 export default function PopularDestinations() {
   const [destinations, setDestinations] = useState<Destination[]>([]);
@@ -60,7 +56,7 @@ export default function PopularDestinations() {
           <h2 className="text-3xl font-bold text-center mb-8 font-[Inter]">Destinations Populaires</h2>
           <div className="flex gap-6 overflow-x-auto px-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="min-w-[280px] h-64 rounded-xl bg-gray-200 animate-pulse" />
+              <div key={i} className="w-[280px] flex-none h-64 rounded-xl bg-gray-200 animate-pulse" />
             ))}
           </div>
         </div>
@@ -82,11 +78,11 @@ export default function PopularDestinations() {
           transition={{ duration: 0.6, ease: 'easeOut' }}
         >
           {destinations.map((dest, idx) => {
-            const imageUrl = dest.imageUrl || `https://picsum.photos/seed/${picsumSeeds[idx % picsumSeeds.length]}/400/250`;
+            const imageUrl = dest.imageUrl || fallbackImages[idx % fallbackImages.length];
             return (
               <div
                 key={dest.id}
-                className="min-w-[280px] flex-shrink-0 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer bg-white group"
+                className="w-[280px] flex-none rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer bg-white group"
               >
                 <div className="relative h-44 w-full overflow-hidden">
                   <img

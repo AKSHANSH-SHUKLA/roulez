@@ -45,7 +45,7 @@ const fallbackCars: RentalCar[] = [
   { id: '6', name: 'Tesla Model 3', category: 'electric', transmission: 'automatic', fuel: 'electrique', seats: 5, doors: 4, bags: 2, ac: true, pricePerDay: 69, imageUrl: '', supplierId: 's2', supplierName: 'Hertz', locationId: '2', features: ['Autopilote', 'GPS', 'Superchargeur'] },
 ];
 
-const picsumSeeds = ['clio', 'peugeot208', 'c3aircross', 'bmw3', 'kangoo', 'tesla3'];
+const fallbackImages = ['/cars/renault-clio.jpg','/cars/peugeot-208.jpg','/cars/citroen-c3.jpg','/cars/bmw-serie-3.jpg','/cars/renault-kangoo.jpg','/cars/tesla-model-3.jpg'];
 
 export default function FeaturedCars() {
   const [cars, setCars] = useState<RentalCar[]>([]);
@@ -105,7 +105,7 @@ export default function FeaturedCars() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {cars.map((car, idx) => {
-            const imageUrl = car.imageUrl || `https://picsum.photos/seed/${picsumSeeds[idx % picsumSeeds.length]}/400/250`;
+            const imageUrl = car.imageUrl || fallbackImages[idx % fallbackImages.length];
             const borderColor = categoryBorderColor[car.category] || 'border-l-gray-400';
 
             return (

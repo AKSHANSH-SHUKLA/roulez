@@ -1,0 +1,573 @@
+{
+  "cars": {
+    "audi-a3": {
+      "name": "Audi A3",
+      "file": "File:AUDI A3 SEDAN (Typ 8Y) China.jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:AUDI_A3_SEDAN_(Typ_8Y)_China.jpg"
+    },
+    "audi-a4": {
+      "name": "Audi A4",
+      "file": "File:2020 Audi A4 S Line 35 TDi S-A facelift 2.0 Front.jpg",
+      "author": "Vauxford",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:2020_Audi_A4_S_Line_35_TDi_S-A_facelift_2.0_Front.jpg"
+    },
+    "audi-a6": {
+      "name": "Audi A6",
+      "file": "File:Audi A6 55 TFSI quattro (2023) (53646977307).jpg",
+      "author": "Charles from Port Chester, New York",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Audi_A6_55_TFSI_quattro_(2023)_(53646977307).jpg"
+    },
+    "audi-q3": {
+      "name": "Audi Q3",
+      "file": "File:Audi Q3 40 TFSI quattro (2021) (53325707992).jpg",
+      "author": "Charles from Port Chester, New York",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Audi_Q3_40_TFSI_quattro_(2021)_(53325707992).jpg"
+    },
+    "audi-q5": {
+      "name": "Audi Q5",
+      "file": "File:2023 Audi Q5 2.0T Premium quattro, 10-06-2024.jpg",
+      "author": "2000chevymontecarlo",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:2023_Audi_Q5_2.0T_Premium_quattro,_10-06-2024.jpg"
+    },
+    "bmw-serie-1": {
+      "name": "BMW Serie 1",
+      "file": "File:BMW 1 Series F70 (2025) Front 1.jpg",
+      "author": "All names i want are taken",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:BMW_1_Series_F70_(2025)_Front_1.jpg"
+    },
+    "bmw-serie-3": {
+      "name": "BMW Serie 3",
+      "file": "File:BMW 3-Series (G20) 330d (2020) (53138135048).jpg",
+      "author": "Charles from Port Chester, New York",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:BMW_3-Series_(G20)_330d_(2020)_(53138135048).jpg"
+    },
+    "bmw-serie-5": {
+      "name": "BMW Serie 5",
+      "file": "File:BMW 5 SERIES (G30) China.jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:BMW_5_SERIES_(G30)_China.jpg"
+    },
+    "bmw-x1": {
+      "name": "BMW X1",
+      "file": "File:BMW iX1 1X7A7227.jpg",
+      "author": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:BMW_iX1_1X7A7227.jpg"
+    },
+    "bmw-x5": {
+      "name": "BMW X5",
+      "file": "File:2023 BMW X5 M Competition MHEV Auto.jpg",
+      "author": "Calreyn88",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:2023_BMW_X5_M_Competition_MHEV_Auto.jpg"
+    },
+    "bmw-i3": {
+      "name": "BMW i3",
+      "file": "File:BMW i3 (G28) China (3).jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:BMW_i3_(G28)_China_(3).jpg"
+    },
+    "citroen-c3": {
+      "name": "Citroen C3",
+      "file": "File:Citroën ë-C3 Auto Zuerich 2024 DSC 6641.jpg",
+      "author": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Citro%C3%ABn_%C3%AB-C3_Auto_Zuerich_2024_DSC_6641.jpg"
+    },
+    "citroen-c5-aircross": {
+      "name": "Citroen C5 Aircross",
+      "file": "File:CITROEN C5 AIRCROSS China (4).jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:CITROEN_C5_AIRCROSS_China_(4).jpg"
+    },
+    "citroen-c5-aircross-suv": {
+      "name": "Citroen C5 Aircross SUV",
+      "file": "File:2022 Citroen C5 Aircross SUV blue front view in Brunei.jpg",
+      "author": "AIMHO'S REBELLION 8490s",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:2022_Citroen_C5_Aircross_SUV_blue_front_view_in_Brunei.jpg"
+    },
+    "citroen-spacetourer": {
+      "name": "Citroen SpaceTourer",
+      "file": "File:Citroën C4 Grand SpaceTourer 1.2 PureTech 130 (2021) (52917661667).jpg",
+      "author": "Charles from Port Chester, New York",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Citro%C3%ABn_C4_Grand_SpaceTourer_1.2_PureTech_130_(2021)_(52917661667).jpg"
+    },
+    "dacia-dokker": {
+      "name": "Dacia Dokker",
+      "file": "File:Dacia Dokker Stepway - Front View.jpg",
+      "author": "(G)jabz",
+      "license": "CC BY 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Dacia_Dokker_Stepway_-_Front_View.jpg"
+    },
+    "dacia-duster": {
+      "name": "Dacia Duster",
+      "file": "File:2023 Dacia Duster 1X7A6974.jpg",
+      "author": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:2023_Dacia_Duster_1X7A6974.jpg"
+    },
+    "dacia-sandero": {
+      "name": "Dacia Sandero",
+      "file": "File:2023 Dacia Sandero Stepway III 1X7A6194.jpg",
+      "author": "Alexander Migl",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:2023_Dacia_Sandero_Stepway_III_1X7A6194.jpg"
+    },
+    "fiat-500": {
+      "name": "Fiat 500",
+      "file": "File:2012 FIAT 500 Sport, front right, 09-09-2023.jpg",
+      "author": "MercurySable99",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:2012_FIAT_500_Sport,_front_right,_09-09-2023.jpg"
+    },
+    "fiat-500e": {
+      "name": "Fiat 500e",
+      "file": "File:Fiat 500e Black in Munich.jpg",
+      "author": "AuHaidhausen",
+      "license": "CC BY 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Fiat_500e_Black_in_Munich.jpg"
+    },
+    "fiat-talento": {
+      "name": "Fiat Talento",
+      "file": "File:Fiat Talento panel van.jpg",
+      "author": "Corvettec6r",
+      "license": "Public domain",
+      "page": "https://commons.wikimedia.org/wiki/File:Fiat_Talento_panel_van.jpg"
+    },
+    "ford-tourneo": {
+      "name": "Ford Tourneo",
+      "file": "File:Ford E-Tourneo Custom (2023) Auto Zuerich 2023 1X7A1490.jpg",
+      "author": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Ford_E-Tourneo_Custom_(2023)_Auto_Zuerich_2023_1X7A1490.jpg"
+    },
+    "hyundai-kona-electrique": {
+      "name": "Hyundai Kona Electrique",
+      "file": "File:Hyundai Kona Electric (SX2) Auto Zuerich 2023 1X7A1021.jpg",
+      "author": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Hyundai_Kona_Electric_(SX2)_Auto_Zuerich_2023_1X7A1021.jpg"
+    },
+    "hyundai-tucson": {
+      "name": "Hyundai Tucson",
+      "file": "File:HYUNDAI TUCSON HYBRID (NX4) China.jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:HYUNDAI_TUCSON_HYBRID_(NX4)_China.jpg"
+    },
+    "hyundai-i20": {
+      "name": "Hyundai i20",
+      "file": "File:Hyundai i20 1.4 Value 2023 (53274259692).jpg",
+      "author": "RL GNZLZ from Chile",
+      "license": "CC BY-SA 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Hyundai_i20_1.4_Value_2023_(53274259692).jpg"
+    },
+    "hyundai-i30": {
+      "name": "Hyundai i30",
+      "file": "File:Hyundai i30 Advantage (III, 2. Facelift) – h 01032025.jpg",
+      "author": "© M 93",
+      "license": "CC BY-SA 3.0 de",
+      "page": "https://commons.wikimedia.org/wiki/File:Hyundai_i30_Advantage_(III,_2._Facelift)_%E2%80%93_h_01032025.jpg"
+    },
+    "iveco-daily": {
+      "name": "Iveco Daily",
+      "file": "File:Mr. Lee's Iveco Daily food van at CIFTIS (20210905145129).jpg",
+      "author": "N509FZ",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Mr._Lee%27s_Iveco_Daily_food_van_at_CIFTIS_(20210905145129).jpg"
+    },
+    "jaguar-xf": {
+      "name": "Jaguar XF",
+      "file": "File:JAGUAR XF SEDAN LWB (X260) China (3).jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:JAGUAR_XF_SEDAN_LWB_(X260)_China_(3).jpg"
+    },
+    "kia-ceed": {
+      "name": "Kia Ceed",
+      "file": "File:Kia Ceed (2023) (53950630128).jpg",
+      "author": "Charles from Port Chester, New York",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Kia_Ceed_(2023)_(53950630128).jpg"
+    },
+    "kia-picanto": {
+      "name": "Kia Picanto",
+      "file": "File:Kia Picanto (52730962762).jpg",
+      "author": "Jason Lawrence from New York",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Kia_Picanto_(52730962762).jpg"
+    },
+    "kia-sportage": {
+      "name": "Kia Sportage",
+      "file": "File:2023 Kia Sportage X-Line AWD, front right, 12-08-2022.jpg",
+      "author": "MercurySable99",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:2023_Kia_Sportage_X-Line_AWD,_front_right,_12-08-2022.jpg"
+    },
+    "kia-e-niro": {
+      "name": "Kia e-Niro",
+      "file": "File:Kia Niro EV (SG2) Automesse Ludwigsburg 2023 1X7A0082.jpg",
+      "author": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Kia_Niro_EV_(SG2)_Automesse_Ludwigsburg_2023_1X7A0082.jpg"
+    },
+    "mg-zs": {
+      "name": "MG ZS",
+      "file": "File:MG ZS China.jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:MG_ZS_China.jpg"
+    },
+    "mercedes-classe-a": {
+      "name": "Mercedes Classe A",
+      "file": "File:Mercedes-Benz A-Klasse (W177) A 35 AMG 4MATIC (2021) (52572519687).jpg",
+      "author": "Charles from Port Chester, New York",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Mercedes-Benz_A-Klasse_(W177)_A_35_AMG_4MATIC_(2021)_(52572519687).jpg"
+    },
+    "mercedes-classe-c": {
+      "name": "Mercedes Classe C",
+      "file": "File:MERCEDES-BENZ C-CLASS LWB (W206) China (6).jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:MERCEDES-BENZ_C-CLASS_LWB_(W206)_China_(6).jpg"
+    },
+    "mercedes-classe-e": {
+      "name": "Mercedes Classe E",
+      "file": "File:MERCEDES-BENZ E CLASS LWB (W214) China (2).jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:MERCEDES-BENZ_E_CLASS_LWB_(W214)_China_(2).jpg"
+    },
+    "mercedes-classe-glc": {
+      "name": "Mercedes Classe GLC",
+      "file": "File:Mercedes-Benz X254 1X7A7049.jpg",
+      "author": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Mercedes-Benz_X254_1X7A7049.jpg"
+    },
+    "mercedes-vito": {
+      "name": "Mercedes Vito",
+      "file": "File:Mercedes-Benz Vito W447 Facelift Sanming 02 2022-11-14.jpg",
+      "author": "JamesYoung8167",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Mercedes-Benz_Vito_W447_Facelift_Sanming_02_2022-11-14.jpg"
+    },
+    "nissan-leaf": {
+      "name": "Nissan Leaf",
+      "file": "File:2023 Nissan Leaf, Pakuwon Mall, West Surabaya.jpg",
+      "author": "Alex Neman",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:2023_Nissan_Leaf,_Pakuwon_Mall,_West_Surabaya.jpg"
+    },
+    "nissan-qashqai": {
+      "name": "Nissan Qashqai",
+      "file": "File:NISSAN QASHQAI (J11) China (5).jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:NISSAN_QASHQAI_(J11)_China_(5).jpg"
+    },
+    "opel-vivaro": {
+      "name": "Opel Vivaro",
+      "file": "File:Opel Vivaro, GIMS 2024, Le Grand-Saconnex (GIMS0136).jpg",
+      "author": "Matti Blume",
+      "license": "CC BY-SA",
+      "page": "https://commons.wikimedia.org/wiki/File:Opel_Vivaro,_GIMS_2024,_Le_Grand-Saconnex_(GIMS0136).jpg"
+    },
+    "peugeot-208": {
+      "name": "Peugeot 208",
+      "file": "File:Peugeot 208 B facelift Automesse Ludwigsburg 2024 IMG 1527.jpg",
+      "author": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Peugeot_208_B_facelift_Automesse_Ludwigsburg_2024_IMG_1527.jpg"
+    },
+    "peugeot-3008": {
+      "name": "Peugeot 3008",
+      "file": "File:PEUGEOT 3008 (T84) China (5).jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:PEUGEOT_3008_(T84)_China_(5).jpg"
+    },
+    "peugeot-308": {
+      "name": "Peugeot 308",
+      "file": "File:Peugeot 308 C 1X7A7329.jpg",
+      "author": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Peugeot_308_C_1X7A7329.jpg"
+    },
+    "peugeot-traveller": {
+      "name": "Peugeot Traveller",
+      "file": "File:Peugeot e-Traveller 1X7A0084.jpg",
+      "author": "Alexander Migl",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Peugeot_e-Traveller_1X7A0084.jpg"
+    },
+    "peugeot-e-208": {
+      "name": "Peugeot e-208",
+      "file": "File:Peugeot e-208 GT (2020) (53323152365).jpg",
+      "author": "Charles from Port Chester, New York",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Peugeot_e-208_GT_(2020)_(53323152365).jpg"
+    },
+    "porsche-macan": {
+      "name": "Porsche Macan",
+      "file": "File:Porsche Macan (43618).jpg",
+      "author": "Calreyn88",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Porsche_Macan_(43618).jpg"
+    },
+    "range-rover-evoque": {
+      "name": "Range Rover Evoque",
+      "file": "File:2023 Range Rover Evoque (L551) IMG 3588.jpg",
+      "author": "Alexander Migl",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:2023_Range_Rover_Evoque_(L551)_IMG_3588.jpg"
+    },
+    "renault-clio": {
+      "name": "Renault Clio",
+      "file": "File:2024 Renault Clio Evolution E-Tech HEV Auto.jpg",
+      "author": "Calreyn88",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:2024_Renault_Clio_Evolution_E-Tech_HEV_Auto.jpg"
+    },
+    "renault-kadjar": {
+      "name": "Renault Kadjar",
+      "file": "File:RENAULT KADJAR China.jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:RENAULT_KADJAR_China.jpg"
+    },
+    "renault-kangoo": {
+      "name": "Renault Kangoo",
+      "file": "File:Renault Kangoo III E-Tech Automesse Ludwigsburg 2023 1X7A0092.jpg",
+      "author": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Renault_Kangoo_III_E-Tech_Automesse_Ludwigsburg_2023_1X7A0092.jpg"
+    },
+    "renault-megane": {
+      "name": "Renault Megane",
+      "file": "File:Renault Mégane E-Tech EV40 (2022) (52925675368).jpg",
+      "author": "Charles from Port Chester, New York",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Renault_M%C3%A9gane_E-Tech_EV40_(2022)_(52925675368).jpg"
+    },
+    "renault-trafic": {
+      "name": "Renault Trafic",
+      "file": "File:Renault Trafic (50022395328).jpg",
+      "author": "crash71100",
+      "license": "CC0",
+      "page": "https://commons.wikimedia.org/wiki/File:Renault_Trafic_(50022395328).jpg"
+    },
+    "renault-zoe": {
+      "name": "Renault Zoe",
+      "file": "File:Renault Zoe Colombia.jpg",
+      "author": "Jason Lawrence",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Renault_Zoe_Colombia.jpg"
+    },
+    "skoda-fabia": {
+      "name": "Skoda Fabia",
+      "file": "File:ŠKODA FABIA (NJ) China.jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:%C5%A0KODA_FABIA_(NJ)_China.jpg"
+    },
+    "skoda-octavia": {
+      "name": "Skoda Octavia",
+      "file": "File:ŠKODA OCTAVIA (5E) China (3).jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:%C5%A0KODA_OCTAVIA_(5E)_China_(3).jpg"
+    },
+    "tesla-model-3": {
+      "name": "Tesla Model 3",
+      "file": "File:Tesla Model 3 in München geparkt.jpg",
+      "author": "AuHaidhausen",
+      "license": "CC BY 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Tesla_Model_3_in_M%C3%BCnchen_geparkt.jpg"
+    },
+    "tesla-model-y": {
+      "name": "Tesla Model Y",
+      "file": "File:2022 Tesla Model Y Long Range AWD (31976).jpg",
+      "author": "Calreyn88",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:2022_Tesla_Model_Y_Long_Range_AWD_(31976).jpg"
+    },
+    "toyota-proace": {
+      "name": "Toyota Proace",
+      "file": "File:2024 Toyota ProAce City Electric Automesse Ludwigsburg 2024 IMG 1704.jpg",
+      "author": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:2024_Toyota_ProAce_City_Electric_Automesse_Ludwigsburg_2024_IMG_1704.jpg"
+    },
+    "toyota-rav4": {
+      "name": "Toyota RAV4",
+      "file": "File:TOYOTA RAV4 (XA50) China (5).jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:TOYOTA_RAV4_(XA50)_China_(5).jpg"
+    },
+    "volkswagen-golf": {
+      "name": "Volkswagen Golf",
+      "file": "File:Volkswagen Golf VIII 1.5 eTSI (2020) (54524366971).jpg",
+      "author": "Charles from Port Chester, New York",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Volkswagen_Golf_VIII_1.5_eTSI_(2020)_(54524366971).jpg"
+    },
+    "volkswagen-id-3": {
+      "name": "Volkswagen ID.3",
+      "file": "File:VOLKSWAGEN ID.3 China (8).jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:VOLKSWAGEN_ID.3_China_(8).jpg"
+    },
+    "volkswagen-polo": {
+      "name": "Volkswagen Polo",
+      "file": "File:Volkswagen Polo VI (2017 - 2020) (52060363281).jpg",
+      "author": "Charles from Port Chester, New York",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Volkswagen_Polo_VI_(2017_-_2020)_(52060363281).jpg"
+    },
+    "volkswagen-tiguan": {
+      "name": "Volkswagen Tiguan",
+      "file": "File:Volkswagen Tiguan III IMG 8390.jpg",
+      "author": "Alexander-93",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Volkswagen_Tiguan_III_IMG_8390.jpg"
+    },
+    "volkswagen-transporter": {
+      "name": "Volkswagen Transporter",
+      "file": "File:VOLKSWAGEN T6 TRANSPORTER HONG KONG (2).jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:VOLKSWAGEN_T6_TRANSPORTER_HONG_KONG_(2).jpg"
+    },
+    "volvo-xc40": {
+      "name": "Volvo XC40",
+      "file": "File:VOLVO XC40 RECHARGE China (3).jpg",
+      "author": "Dinkun Chen",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:VOLVO_XC40_RECHARGE_China_(3).jpg"
+    },
+    "seat-ibiza": {
+      "name": "Seat Ibiza",
+      "file": "File:20231121 092814 Seat Ibiza.jpg",
+      "author": "Ramsch",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:20231121_092814_Seat_Ibiza.jpg"
+    },
+    "seat-leon": {
+      "name": "Seat Leon",
+      "file": "File:Seat Leon (2023) (53986942245).jpg",
+      "author": "Charles from Port Chester, New York",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Seat_Leon_(2023)_(53986942245).jpg"
+    },
+    "toyota-corolla": {
+      "name": "Toyota Corolla",
+      "file": "File:Le Havre - 76600 - 2024.07.05 - Toyota Corolla E210 n°5 © Anthony Levrot.jpg",
+      "author": "Anthony Levrot",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Le_Havre_-_76600_-_2024.07.05_-_Toyota_Corolla_E210_n%C2%B05_%C2%A9_Anthony_Levrot.jpg"
+    },
+    "toyota-yaris": {
+      "name": "Toyota Yaris",
+      "file": "File:Toyota Yaris Cross Hybrid 1X7A6352.jpg",
+      "author": "Alexander Migl",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Toyota_Yaris_Cross_Hybrid_1X7A6352.jpg"
+    }
+  },
+  "destinations": {
+    "paris": {
+      "name": "Paris",
+      "file": "File:Panoramic view on the illuminated 7th arrondissement of Paris at sunset in France.jpg",
+      "author": "Basile Morin",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Panoramic_view_on_the_illuminated_7th_arrondissement_of_Paris_at_sunset_in_France.jpg"
+    },
+    "nice": {
+      "name": "Nice",
+      "file": "File:Nice (06) Baie des Anges 771.jpg",
+      "author": "GFreihalter",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Nice_(06)_Baie_des_Anges_771.jpg"
+    },
+    "lyon": {
+      "name": "Lyon",
+      "file": "File:Theatre romain de Fourviere panorama Lyon 2026.JPG",
+      "author": "Mike is Michi",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Theatre_romain_de_Fourviere_panorama_Lyon_2026.JPG"
+    },
+    "bordeaux": {
+      "name": "Bordeaux",
+      "file": "File:Bordeaux place de la Bourse.jpg",
+      "author": "Slywire",
+      "license": "CC BY-SA 4.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Bordeaux_place_de_la_Bourse.jpg"
+    },
+    "marseille": {
+      "name": "Marseille",
+      "file": "File:Marseille - Old Port.jpg",
+      "author": "Ingo Mehling",
+      "license": "CC BY-SA 3.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Marseille_-_Old_Port.jpg"
+    },
+    "toulouse": {
+      "name": "Toulouse",
+      "file": "File:Toulouse garonne with pont neuf.jpg",
+      "author": "Nikopol (Phillip Maiwald)",
+      "license": "CC BY 3.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Toulouse_garonne_with_pont_neuf.jpg"
+    },
+    "strasbourg": {
+      "name": "Strasbourg",
+      "file": "File:View along a Strasbourg canal.jpg",
+      "author": "Sjaak Kempe",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:View_along_a_Strasbourg_canal.jpg"
+    },
+    "lille": {
+      "name": "Lille",
+      "file": "File:Vieille bourse Lille.jpg",
+      "author": "Kaelkael",
+      "license": "CC BY-SA 3.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Vieille_bourse_Lille.jpg"
+    },
+    "nantes": {
+      "name": "Nantes",
+      "file": "File:Chemin de Belle-Île, Nantes 01.jpg",
+      "author": "Kalepom",
+      "license": "CC0",
+      "page": "https://commons.wikimedia.org/wiki/File:Chemin_de_Belle-%C3%8Ele,_Nantes_01.jpg"
+    },
+    "montpellier": {
+      "name": "Montpellier",
+      "file": "File:Montpellier- Place de la Comédie - 52282886625.jpg",
+      "author": "Jorge Franganillo",
+      "license": "CC BY 2.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Montpellier-_Place_de_la_Com%C3%A9die_-_52282886625.jpg"
+    },
+    "cote-d-azur": {
+      "name": "Cote d Azur",
+      "file": "File:Agay vu du Dramont.JPG",
+      "author": "Frédéric Ducarme",
+      "license": "CC BY-SA 3.0",
+      "page": "https://commons.wikimedia.org/wiki/File:Agay_vu_du_Dramont.JPG"
+    }
+  }
+}
