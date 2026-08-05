@@ -58,8 +58,10 @@ export default function FeaturedCars() {
       try {
         const res = await fetch('/api/cars?limit=6');
         if (res.ok) {
-          const data: RentalCar[] = await res.json();
-          setCars(data);
+          const json = await res.json();
+          // L'API renvoie { success, data } — on accepte aussi un tableau brut
+          const list: RentalCar[] = Array.isArray(json) ? json : (json?.data ?? []);
+          setCars(list.length > 0 ? list : fallbackCars);
         } else {
           setCars(fallbackCars);
         }

@@ -21,8 +21,16 @@ export default function PopularDestinations() {
       try {
         const res = await fetch('/api/destinations');
         if (res.ok) {
-          const data: Destination[] = await res.json();
-          setDestinations(data);
+          const json = await res.json();
+          // L'API renvoie { success, data } — on accepte aussi un tableau brut
+          const list: Destination[] = Array.isArray(json) ? json : (json?.data ?? []);
+          if (list.length > 0) {
+            setDestinations(list);
+          } else {
+            throw new Error('empty destinations');
+          }
+        } else {
+          throw new Error('bad response');
         }
       } catch {
         // fallback data

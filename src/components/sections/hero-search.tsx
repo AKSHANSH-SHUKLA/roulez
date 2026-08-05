@@ -42,9 +42,11 @@ export default function HeroSearch() {
     try {
       const res = await fetch(`/api/locations?q=${encodeURIComponent(query)}`);
       if (res.ok) {
-        const data = await res.json();
-        setLocations(data);
-        setShowDropdown(data.length > 0);
+        const json = await res.json();
+        // L'API renvoie { success, data } — on accepte aussi un tableau brut
+        const list = Array.isArray(json) ? json : (json?.data ?? []);
+        setLocations(list);
+        setShowDropdown(list.length > 0);
       }
     } catch {
       // silently fail
@@ -87,8 +89,10 @@ export default function HeroSearch() {
 
       const res = await fetch(`/api/cars?${params.toString()}`);
       if (res.ok) {
-        const data: RentalCar[] = await res.json();
-        setSearchResults(data);
+        const json = await res.json();
+        // L'API renvoie { success, data } — on accepte aussi un tableau brut
+        const list: RentalCar[] = Array.isArray(json) ? json : (json?.data ?? []);
+        setSearchResults(list);
         setPage('search');
       }
     } catch {
@@ -115,8 +119,10 @@ export default function HeroSearch() {
       if (returnDate) params.set('returnDate', returnDate);
       const res = await fetch(`/api/cars?${params.toString()}`);
       if (res.ok) {
-        const data: RentalCar[] = await res.json();
-        setSearchResults(data);
+        const json = await res.json();
+        // L'API renvoie { success, data } — on accepte aussi un tableau brut
+        const list: RentalCar[] = Array.isArray(json) ? json : (json?.data ?? []);
+        setSearchResults(list);
         setPage('search');
       }
     } catch {
