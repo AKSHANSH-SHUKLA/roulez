@@ -25,6 +25,10 @@ export default function RootLayout({
       <head>
         {/* Empêche la traduction automatique de Chrome de casser l'hydratation React */}
         <meta name="google" content="notranslate" />
+        {/* Filet de sécurité : sans JS, les entrées animées restent visibles */}
+        <noscript>
+          <style>{`[style*="opacity:0"],[style*="opacity: 0"]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
       </head>
       <body className="bg-paper text-ink antialiased">{children}</body>
     </html>

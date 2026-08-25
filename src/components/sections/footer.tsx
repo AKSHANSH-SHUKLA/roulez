@@ -18,7 +18,7 @@ export default function Footer() {
     <footer className="bg-ink pt-20 pb-10 text-paper">
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12">
-          <div className="md:col-span-5">
+          <div className="md:col-span-4">
             <div className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-saffron-500">
                 <Car size={19} className="text-ink" />
@@ -46,7 +46,7 @@ export default function Footer() {
             </div>
           ))}
 
-          <div className="md:col-span-1">
+          <div className="md:col-span-2">
             <h3 className="label-tight text-[11px] text-saffron-500">Infos</h3>
             <ul className="mt-5 space-y-3">
               {[
@@ -57,7 +57,7 @@ export default function Footer() {
                 { label: 'Credits photos', href: '/credits' },
               ].map((l) => (
                 <li key={l.label}>
-                  <a href={l.href} className="whitespace-nowrap text-[15px] text-paper/70 transition-colors duration-200 hover:text-paper">
+                  <a href={l.href} className="text-[15px] text-paper/70 transition-colors duration-200 hover:text-paper">
                     {l.label}
                   </a>
                 </li>
