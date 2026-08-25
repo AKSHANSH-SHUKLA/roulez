@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Car } from 'lucide-react';
+import { Car, ArrowRight } from 'lucide-react';
+import { Tilt, Reveal } from '@/components/motion/tilt';
+import { useAppStore, useBookingStore } from '@/lib/store';
 import type { Destination } from '@/lib/types';
 
 const fallbackImages = ['/destinations/paris.jpg','/destinations/nice.jpg','/destinations/lyon.jpg','/destinations/bordeaux.jpg','/destinations/marseille.jpg','/destinations/toulouse.jpg','/destinations/strasbourg.jpg','/destinations/lille.jpg','/destinations/nantes.jpg','/destinations/montpellier.jpg'];
@@ -11,6 +13,23 @@ export default function PopularDestinations() {
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { setPage } = useAppStore();
+  const { setFilters, setSearchResults } = useBookingStore();
+
+  async function openCity(city: string) {
+    setFilters({ pickupLocation: city });
+    try {
+      const res = await fetch(`/api/cars?pickupLocation=${encodeURIComponent(city)}`);
+      if (res.ok) {
+        const json = await res.json();
+        const list = Array.isArray(json) ? json : (json?.data ?? []);
+        setSearchResults(list);
+      }
+    } catch {
+      // navigate anyway
+    }
+    setPage('search');
+  }
 
   useEffect(() => {
     async function fetchDestinations() {
@@ -51,12 +70,12 @@ export default function PopularDestinations() {
 
   if (loading) {
     return (
-      <section className="py-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8 font-[Inter]">Destinations Populaires</h2>
-          <div className="flex gap-6 overflow-x-auto px-4">
+      <section className="bg-paper py-24">
+        <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+          <div className="h-10 w-72 rounded-lg bg-petrol-50" />
+          <div className="mt-12 flex gap-6 overflow-hidden">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="w-[280px] flex-none h-64 rounded-xl bg-gray-200 animate-pulse" />
+              <div key={i} className="h-[26rem] w-[20rem] flex-none rounded-[20px] bg-petrol-50" />
             ))}
           </div>
         </div>
@@ -65,49 +84,69 @@ export default function PopularDestinations() {
   }
 
   return (
-    <section className="py-16 px-4">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-10 font-[Inter]">Destinations Populaires</h2>
+    <section className="relative bg-paper py-24 md:py-32">
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+        <Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <h2 className="font-poster max-w-[15ch] text-[clamp(2rem,4.6vw,3.6rem)] text-ink">
+              Ou voulez-vous rouler
+            </h2>
+            <p className="max-w-[34ch] text-[15px] leading-relaxed text-ink-2">
+              Onze villes de depart, du Vieux-Port aux quais de Bordeaux.
+            </p>
+          </div>
+        </Reveal>
 
-        <motion.div
+        <div
           ref={containerRef}
-          className="flex gap-6 overflow-x-auto px-4 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          className="hide-scrollbar stage mt-14 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4"
         >
           {destinations.map((dest, idx) => {
             const imageUrl = dest.imageUrl || fallbackImages[idx % fallbackImages.length];
             return (
-              <div
+              <motion.div
                 key={dest.id}
-                className="w-[280px] flex-none rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow cursor-pointer bg-white group"
+                initial={{ opacity: 0, transform: 'translate3d(0,26px,0)' }}
+                whileInView={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.6, delay: Math.min(idx, 4) * 0.07, ease: [0.23, 1, 0.32, 1] }}
+                className="w-[20rem] flex-none snap-start"
               >
-                <div className="relative h-44 w-full overflow-hidden">
-                  <img
-                    src={imageUrl}
-                    alt={dest.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-lg text-gray-900 font-[Inter]">{dest.name}</h3>
-                  <p className="text-sm text-gray-600 mt-1 line-clamp-2 font-[Inter]">{dest.description}</p>
-                  <div className="flex items-center justify-between mt-3 text-sm text-gray-500 font-[Inter]">
-                    <span className="flex items-center gap-1">
-                      <Car size={14} className="text-emerald-600" />
-                      {dest.carCount} voitures
-                    </span>
-                    <span className="font-semibold text-emerald-600">
-                      A partir de {dest.startingPrice} EUR/jour
-                    </span>
-                  </div>
-                </div>
-              </div>
+                <Tilt max={7} scale={1.02}>
+                  <button
+                    onClick={() => openCity(dest.name)}
+                    className="pressable group block h-[26rem] w-full overflow-hidden rounded-[20px] text-left shadow-[0_24px_50px_-28px_rgba(20,35,28,0.75)]"
+                  >
+                    <div className="relative h-full w-full">
+                      <img
+                        src={imageUrl}
+                        alt={dest.name}
+                        className="h-full w-full object-cover transition-transform duration-[600ms] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.06]"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-transparent" />
+                      <div className="absolute inset-x-0 bottom-0 p-6">
+                        <h3 className="font-poster-md text-2xl text-paper">{dest.name}</h3>
+                        <p className="mt-1.5 line-clamp-2 text-[13px] leading-snug text-paper/80">
+                          {dest.description}
+                        </p>
+                        <div className="mt-4 flex items-center justify-between border-t border-paper/25 pt-3.5">
+                          <span className="flex items-center gap-1.5 text-[13px] text-paper/85">
+                            <Car size={14} className="text-saffron-300" />
+                            <span className="nums">{dest.carCount}</span> voitures
+                          </span>
+                          <span className="nums flex items-center gap-1.5 text-[13px] font-bold text-saffron-300">
+                            des {dest.startingPrice} EUR/jour
+                            <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                </Tilt>
+              </motion.div>
             );
           })}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

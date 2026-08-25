@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Search, MapPin, Calendar, ChevronDown } from 'lucide-react';
+import { Search, MapPin, Calendar, ShieldCheck, Ban, Clock3 } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { Tilt } from '@/components/motion/tilt';
 import { useAppStore, useBookingStore } from '@/lib/store';
 import type { Location, RentalCar } from '@/lib/types';
 
@@ -144,113 +146,161 @@ export default function HeroSearch() {
     setReturnDate(threeDays.toISOString().split('T')[0]);
   }, []);
 
+  const { scrollY } = useScroll();
+  const sunY = useTransform(scrollY, [0, 700], [0, 120]);
+  const stackY = useTransform(scrollY, [0, 700], [0, -60]);
+
+  const field =
+    'w-full rounded-[12px] border border-petrol-100 bg-paper px-3 py-3 text-base text-ink ' +
+    'placeholder:text-ink-2/55 focus:outline-none focus:border-petrol-500 ' +
+    'transition-[border-color] duration-200';
+
   return (
-    <section className="bg-gradient-to-br from-emerald-600 to-teal-700 py-20 px-4">
-      <div className="max-w-7xl mx-auto text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-white max-w-3xl mx-auto font-[Inter] leading-tight">
-          Trouvez votre voiture ideale en France
-        </h1>
-        <p className="text-white/80 text-lg mt-4 font-[Inter]">
-          Comparez les prix de plus de 10 fournisseurs
-        </p>
+    <section className="relative overflow-hidden bg-petrol-700">
+      {/* poster field: hard-edged shapes, no blurred blobs */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute -left-40 -top-32 h-[34rem] w-[34rem] rounded-full bg-petrol-600" />
+        <div className="absolute -bottom-56 left-1/4 h-[40rem] w-[40rem] rounded-full bg-petrol-900/70" />
+        <div className="absolute right-0 top-0 h-full w-[38%] bg-petrol-600/45" />
+        <svg className="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden>
+          <path d="M0 120V64c220 34 420 34 620 0S1180 8 1440 52v68z" fill="#faf5ec" />
+        </svg>
+      </div>
 
-        {/* Search Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 max-w-4xl mx-auto mt-8 text-left">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Location input */}
-            <div className="relative lg:col-span-1" ref={dropdownRef}>
-              <label className="block text-xs font-medium text-gray-500 mb-1 font-[Inter]">
-                Lieu de prise en charge
-              </label>
-              <div className="relative">
-                <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  value={locationQuery}
-                  onChange={(e) => handleLocationChange(e.target.value)}
-                  onFocus={() => {
-                    if (locations.length > 0) setShowDropdown(true);
-                  }}
-                  placeholder="Ville ou aeroport"
-                  className="w-full pl-9 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-[Inter]"
-                />
-              </div>
+      <div className="relative mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 px-6 pb-28 pt-20 md:px-10 lg:grid-cols-12 lg:gap-8 lg:pb-36 lg:pt-24">
+        {/* ---------- left: thesis + control ---------- */}
+        <div className="lg:col-span-7">
+          <motion.h1
+            initial={{ opacity: 0, transform: 'translate3d(0,24px,0)' }}
+            animate={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
+            transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+            className="font-poster max-w-[13ch] text-[clamp(2.6rem,6.4vw,5.1rem)] text-paper"
+          >
+            Toute la France en voiture
+          </motion.h1>
 
-              {/* Dropdown */}
-              {showDropdown && locations.length > 0 && (
-                <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-white shadow-lg rounded-lg max-h-60 overflow-y-auto border border-gray-100">
-                  {locations.map((loc) => (
-                    <button
-                      key={loc.id}
-                      onClick={() => selectLocation(loc)}
-                      className="w-full text-left px-4 py-2.5 hover:bg-emerald-50 transition-colors border-b border-gray-50 last:border-0"
-                    >
-                      <div className="text-sm font-medium text-gray-900 font-[Inter]">{loc.name}</div>
-                      <div className="text-xs text-gray-500 font-[Inter]">{loc.city}</div>
-                    </button>
-                  ))}
+          <motion.p
+            initial={{ opacity: 0, transform: 'translate3d(0,18px,0)' }}
+            animate={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
+            transition={{ duration: 0.7, delay: 0.08, ease: [0.23, 1, 0.32, 1] }}
+            className="mt-6 max-w-[46ch] text-lg leading-relaxed text-petrol-100"
+          >
+            Comparez les prix de plus de 10 loueurs et réservez en quelques clics.
+          </motion.p>
+
+          {/* control panel: anchored to the column, printed onto the field */}
+          <motion.div
+            initial={{ opacity: 0, transform: 'translate3d(0,28px,0)' }}
+            animate={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
+            transition={{ duration: 0.75, delay: 0.16, ease: [0.23, 1, 0.32, 1] }}
+            className="mt-10 max-w-2xl rounded-[20px] bg-paper p-5 shadow-[0_24px_60px_-24px_rgba(7,47,39,0.75)] md:p-6"
+          >
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {/* lieu */}
+              <div className="relative sm:col-span-2" ref={dropdownRef}>
+                <label htmlFor="lieu" className="label-tight mb-2 block text-[11px] text-ink-2">
+                  Lieu de prise en charge
+                </label>
+                <div className="relative">
+                  <MapPin size={17} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-petrol-500" />
+                  <input
+                    id="lieu"
+                    type="text"
+                    value={locationQuery}
+                    onChange={(e) => handleLocationChange(e.target.value)}
+                    onFocus={() => { if (locations.length > 0) setShowDropdown(true); }}
+                    placeholder="Paris, Nice, aéroport de Lyon"
+                    className={field + ' pl-10'}
+                  />
                 </div>
-              )}
-            </div>
 
-            {/* Pickup date */}
-            <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1 font-[Inter]">
-                Date de debut
-              </label>
-              <div className="relative">
-                <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="date"
-                  value={pickupDate}
-                  onChange={(e) => setPickupDate(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-[Inter]"
-                />
+                {showDropdown && locations.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, transform: 'translate3d(0,-6px,0)' }}
+                    animate={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
+                    transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
+                    style={{ transformOrigin: 'top center' }}
+                    className="absolute left-0 right-0 top-full z-30 mt-2 max-h-64 overflow-y-auto rounded-[12px] border border-petrol-100 bg-paper shadow-[0_18px_40px_-18px_rgba(7,47,39,0.5)]"
+                  >
+                    {locations.map((loc) => (
+                      <button
+                        key={loc.id}
+                        onClick={() => selectLocation(loc)}
+                        className="block w-full border-b border-petrol-50 px-4 py-3 text-left last:border-0 transition-colors duration-150 hover:bg-petrol-50"
+                      >
+                        <span className="block text-[15px] font-semibold text-ink">{loc.name}</span>
+                        <span className="block text-[13px] text-ink-2">{loc.city}</span>
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </div>
+
+              {/* dates */}
+              <div>
+                <label htmlFor="debut" className="label-tight mb-2 block text-[11px] text-ink-2">Date de début</label>
+                <div className="relative">
+                  <Calendar size={17} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-petrol-500" />
+                  <input id="debut" type="date" value={pickupDate} onChange={(e) => setPickupDate(e.target.value)} className={field + ' pl-10'} />
+                </div>
+              </div>
+              <div>
+                <label htmlFor="retour" className="label-tight mb-2 block text-[11px] text-ink-2">Date de retour</label>
+                <div className="relative">
+                  <Calendar size={17} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-petrol-500" />
+                  <input id="retour" type="date" value={returnDate} onChange={(e) => setReturnDate(e.target.value)} className={field + ' pl-10'} />
+                </div>
               </div>
             </div>
 
-            {/* Return date */}
-            <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1 font-[Inter]">
-                Date de retour
-              </label>
-              <div className="relative">
-                <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="date"
-                  value={returnDate}
-                  onChange={(e) => setReturnDate(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent font-[Inter]"
-                />
-              </div>
-            </div>
+            <button
+              onClick={() => handleSearch()}
+              disabled={loading}
+              className="pressable mt-5 flex w-full items-center justify-center gap-2.5 rounded-[12px] bg-petrol-600 px-6 py-4 text-base font-bold text-paper hover:bg-petrol-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <Search size={19} />
+              {loading ? 'Recherche en cours' : 'Rechercher'}
+            </button>
 
-            {/* Search button */}
-            <div className="flex items-end">
-              <button
-                onClick={() => handleSearch()}
-                disabled={loading}
-                className="w-full bg-emerald-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-[Inter]"
-              >
-                <Search size={16} />
-                {loading ? 'Recherche...' : 'Rechercher'}
-              </button>
+            <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-petrol-50 pt-4">
+              <span className="label-tight mr-1 text-[11px] text-ink-2">Départs populaires</span>
+              {popularCities.map((city) => (
+                <button
+                  key={city}
+                  onClick={() => handlePopularCity(city)}
+                  className="pressable rounded-full bg-petrol-50 px-3.5 py-1.5 text-sm font-semibold text-petrol-700 transition-colors duration-200 hover:bg-saffron-300 hover:text-ink"
+                >
+                  {city}
+                </button>
+              ))}
             </div>
-          </div>
+          </motion.div>
+
+          <ul className="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-[15px] text-petrol-100">
+            <li className="flex items-center gap-2"><ShieldCheck size={17} className="text-saffron-300" />Assurance incluse</li>
+            <li className="flex items-center gap-2"><Ban size={17} className="text-saffron-300" />Annulation gratuite</li>
+            <li className="flex items-center gap-2"><Clock3 size={17} className="text-saffron-300" />Assistance 24/7</li>
+          </ul>
         </div>
 
-        {/* Popular destinations chips */}
-        <div className="flex flex-wrap justify-center gap-2 mt-6">
-          <span className="text-white/70 text-sm font-[Inter] self-center mr-1">Populaire :</span>
-          {popularCities.map((city) => (
-            <button
-              key={city}
-              onClick={() => handlePopularCity(city)}
-              className="bg-white/20 backdrop-blur-sm text-white px-4 py-1.5 rounded-full text-sm font-medium hover:bg-white/30 transition-colors font-[Inter]"
-            >
-              {city}
-            </button>
-          ))}
+        {/* ---------- right: poster stack, depth on pointer ---------- */}
+        <div className="relative hidden lg:col-span-5 lg:block">
+          <motion.div aria-hidden style={{ y: sunY }} className="absolute -right-10 -top-24 h-72 w-72 rounded-full bg-saffron-500" />
+          <motion.div style={{ y: stackY }} className="stage-far relative">
+            <Tilt max={11} scale={1.015} className="[transform-style:preserve-3d]">
+              <div className="relative h-[30rem] w-full">
+                <div className="absolute right-6 top-0 h-64 w-[19rem] overflow-hidden rounded-[20px] shadow-[0_30px_60px_-24px_rgba(7,47,39,0.8)] [transform:translateZ(70px)]">
+                  <img src="/destinations/nice.jpg" alt="La baie des Anges à Nice" className="h-full w-full object-cover" />
+                </div>
+                <div className="absolute left-0 top-40 h-60 w-[17rem] overflow-hidden rounded-[20px] shadow-[0_30px_60px_-24px_rgba(7,47,39,0.85)] [transform:translateZ(120px)]">
+                  <img src="/destinations/paris.jpg" alt="Paris depuis le 7e arrondissement" className="h-full w-full object-cover" />
+                </div>
+                <div className="absolute bottom-0 right-2 h-52 w-[15rem] overflow-hidden rounded-[20px] shadow-[0_24px_50px_-20px_rgba(7,47,39,0.8)] [transform:translateZ(30px)]">
+                  <img src="/destinations/marseille.jpg" alt="Le Vieux-Port de Marseille" className="h-full w-full object-cover" />
+                </div>
+              </div>
+            </Tilt>
+          </motion.div>
         </div>
       </div>
     </section>

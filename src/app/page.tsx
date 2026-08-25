@@ -8,6 +8,8 @@ import HowItWorks from '@/components/sections/how-it-works';
 import FeaturedCars from '@/components/sections/featured-cars';
 import Testimonials from '@/components/sections/testimonials';
 import Footer from '@/components/sections/footer';
+import SupplierRail from '@/components/sections/supplier-rail';
+import CtaBand from '@/components/sections/cta-band';
 import SearchResults from '@/components/sections/search-results';
 import CarDetail from '@/components/sections/car-detail';
 import BuySell from '@/components/sections/buy-sell';
@@ -25,10 +27,12 @@ export default function Page() {
           <>
             <Navbar />
             <HeroSearch />
+            <SupplierRail />
             <PopularDestinations />
             <HowItWorks />
             <FeaturedCars />
             <Testimonials />
+            <CtaBand />
             <Footer />
           </>
         );
@@ -69,10 +73,12 @@ export default function Page() {
           <>
             <Navbar />
             <HeroSearch />
+            <SupplierRail />
             <PopularDestinations />
             <HowItWorks />
             <FeaturedCars />
             <Testimonials />
+            <CtaBand />
             <Footer />
           </>
         );

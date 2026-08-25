@@ -1,35 +1,125 @@
 @import "tailwindcss";
 
+/* ============================================================
+   ROULEZ — "AFFICHE"
+   Direction: vintage French travel poster (PLM / Riviera) meets
+   modern motion. Flat colour fields own whole regions; nothing
+   floats on a gradient. Paper, not white. Ink, not black.
+   ============================================================ */
+
 @theme {
-  --color-emerald-50: #ecfdf5;
-  --color-emerald-100: #d1fae5;
-  --color-emerald-200: #a7f3d0;
-  --color-emerald-300: #6ee7b7;
-  --color-emerald-400: #34d399;
-  --color-emerald-500: #10b981;
-  --color-emerald-600: #059669;
-  --color-emerald-700: #047857;
-  --color-emerald-800: #065f46;
-  --color-emerald-900: #064e3b;
-  --color-emerald-950: #022c22;
+  /* -- fields (each owns a region of the page, never an accent) -- */
+  --color-paper:      #faf5ec;   /* poster stock */
+  --color-paper-2:    #f3ead9;   /* second paper, for banding */
+  --color-ink:        #14231c;   /* poster black, green-cast */
+  --color-ink-2:      #3d5148;   /* secondary ink */
+
+  --color-petrol-50:  #e6f0ec;
+  --color-petrol-100: #c3ded4;
+  --color-petrol-300: #5f9c8a;
+  --color-petrol-500: #12775f;
+  --color-petrol-600: #0e6350;
+  --color-petrol-700: #0b4f41;
+  --color-petrol-900: #072f27;
+
+  --color-saffron-300:#f5cd86;
+  --color-saffron-500:#e9a63c;
+  --color-saffron-700:#b8791d;
+
+  --color-terra-300:  #e79b83;
+  --color-terra-500:  #ce5638;
+  --color-terra-700:  #9c3a22;
+
+  --color-azure-300:  #8ec0e0;
+  --color-azure-500:  #2f72a8;
+  --color-azure-700:  #1d4d76;
+
+  --font-display: var(--font-archivo), system-ui, sans-serif;
+  --font-sans:    var(--font-archivo), system-ui, sans-serif;
 }
 
-html { scroll-behavior: smooth; }
-body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+:root {
+  --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --r-lg: 20px;   /* one radius scale, soft */
+  --r-md: 12px;
+  --r-sm: 8px;
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+html { scroll-behavior: smooth; background: var(--color-paper); }
+
+body {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
+/* -- browser surfaces wear the design too -- */
+::selection { background: #e9a63c; color: #14231c; }
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: var(--color-paper-2); }
+::-webkit-scrollbar-thumb { background: #b9c8c0; border: 3px solid var(--color-paper-2); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #8fa79c; }
+* { scrollbar-color: #b9c8c0 var(--color-paper-2); }
+
+:focus-visible {
+  outline: 3px solid var(--color-saffron-500);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
+input, textarea, select { caret-color: var(--color-petrol-500); }
+
+/* -- display type: Archivo at expanded width, poster weight -- */
+.font-poster {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-variation-settings: "wdth" 112;
+  font-weight: 800;
+  letter-spacing: -0.028em;
+  line-height: 1.03;
+  text-wrap: balance;
+}
+.font-poster-md {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-variation-settings: "wdth" 108;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.label-tight {
+  font-variation-settings: "wdth" 92;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+p { text-wrap: pretty; }
+.nums { font-variant-numeric: tabular-nums; }
+
+/* -- pressable -- */
+.pressable { transition: transform 160ms var(--ease-out), box-shadow 200ms var(--ease-out); }
+.pressable:active { transform: scale(0.97); }
+
+/* -- authored entrance: colour field wipes, content rises -- */
+@keyframes riseIn { from { opacity: 0; transform: translate3d(0, 22px, 0); } to { opacity: 1; transform: none; } }
+.rise { animation: riseIn 640ms var(--ease-out) both; }
+
+/* -- one marquee, supplier names -- */
+@keyframes railSlide { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+.rail { animation: railSlide 38s linear infinite; will-change: transform; }
+.rail-host:hover .rail { animation-play-state: paused; }
+
+/* -- 3D stage -- */
+.stage { perspective: 1200px; }
+.stage-far { perspective: 1800px; }
 
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rail { animation: none; }
+  .rise { animation: riseIn 1ms both; }
+  *, *::before, *::after { transition-duration: 160ms !important; }
+}

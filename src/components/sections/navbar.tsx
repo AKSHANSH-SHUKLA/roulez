@@ -1,145 +1,122 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
-import { useAppStore } from '@/lib/store';
-import { useAuthStore } from '@/lib/store';
+import { Menu, X, User, Car } from 'lucide-react';
+import { useAppStore, useAuthStore } from '@/lib/store';
 
-const navLinks = [
+const links = [
   { label: 'Accueil', page: 'home' },
   { label: 'Location', page: 'search' },
   { label: 'Achat & Vente', page: 'buy-sell' },
 ];
 
 export default function Navbar() {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { currentPage, setPage } = useAppStore();
   const { user, setShowAuth } = useAuthStore();
 
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [mobileOpen]);
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-  const handleNav = (page: string) => {
+  const go = (page: string) => {
     setPage(page);
-    setMobileOpen(false);
+    setOpen(false);
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Left: Logo */}
-          <button
-            onClick={() => handleNav('home')}
-            className="text-xl font-bold text-emerald-600 font-[Inter]"
-          >
-            Roulez
-          </button>
+    <header
+      className={`sticky top-0 z-50 transition-[background-color,box-shadow] duration-300 ${
+        scrolled ? 'bg-paper/95 shadow-[0_1px_0_rgba(20,35,28,0.12)] backdrop-blur-md' : 'bg-paper'
+      }`}
+    >
+      <nav className="mx-auto flex h-[68px] max-w-[1400px] items-center justify-between px-6 md:px-10">
+        <button onClick={() => go('home')} className="pressable flex items-center gap-2.5">
+          <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-petrol-600">
+            <Car size={19} className="text-paper" />
+          </span>
+          <span className="font-poster text-xl text-ink">Roulez</span>
+        </button>
 
-          {/* Center: Nav links (desktop) */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+        <ul className="hidden items-center gap-1 md:flex">
+          {links.map((l) => (
+            <li key={l.page}>
               <button
-                key={link.page}
-                onClick={() => handleNav(link.page)}
-                className={`text-sm font-medium transition-colors font-[Inter] ${
-                  currentPage === link.page
-                    ? 'text-emerald-600'
-                    : 'text-gray-700 hover:text-emerald-600'
-                }`
-              }
+                onClick={() => go(l.page)}
+                className={`relative rounded-[10px] px-4 py-2 text-[15px] font-semibold transition-colors duration-200 ${
+                  currentPage === l.page ? 'text-petrol-600' : 'text-ink-2 hover:text-ink'
+                }`}
               >
-                {link.label}
+                {l.label}
+                {currentPage === l.page && (
+                  <span className="absolute inset-x-4 -bottom-0.5 h-[3px] rounded-full bg-saffron-500" />
+                )}
               </button>
-            ))}
-          </div>
+            </li>
+          ))}
+        </ul>
 
-          {/* Right: Auth button (desktop) */}
-          <div className="hidden md:block">
-            {user ? (
-              <span className="text-sm font-medium text-gray-700 font-[Inter]">
-                {user.name}
-              </span>
-            ) : (
-              <button
-                onClick={() => setShowAuth(true)}
-                className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors font-[Inter]"
-              >
-                Se Connecter
-              </button>
-            )}
-          </div>
+        <div className="flex items-center gap-2">
+          {user ? (
+            <span className="hidden items-center gap-2 rounded-full bg-petrol-50 px-4 py-2 text-sm font-semibold text-petrol-700 md:flex">
+              <User size={15} />
+              {user.name}
+            </span>
+          ) : (
+            <button
+              onClick={() => setShowAuth(true)}
+              className="pressable hidden items-center gap-2 rounded-[10px] bg-ink px-5 py-2.5 text-sm font-bold text-paper transition-colors duration-200 hover:bg-petrol-700 md:flex"
+            >
+              <User size={15} />
+              Connexion
+            </button>
+          )}
 
-          {/* Mobile: Hamburger */}
           <button
-            className="md:hidden p-2 text-gray-700"
-            onClick={() => setMobileOpen(true)}
-            aria-label="Ouvrir le menu"
+            onClick={() => setOpen(!open)}
+            aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'}
+            aria-expanded={open}
+            className="pressable flex h-11 w-11 items-center justify-center rounded-[10px] text-ink md:hidden"
           >
-            <Menu size={24} />
+            {open ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
-      </div>
+      </nav>
 
-      {/* Mobile overlay */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={() => setMobileOpen(false)}
-          />
-          <div className="absolute right-0 top-0 h-full w-72 bg-white shadow-xl p-6">
-            <div className="flex justify-end mb-8">
-              <button
-                onClick={() => setMobileOpen(false)}
-                className="p-2 text-gray-700 hover:text-gray-900"
-                aria-label="Fermer le menu"
-              >
-                <X size={24} />
-              </button>
-            </div>
-            <div className="flex flex-col gap-6">
-              {navLinks.map((link) => (
-                <button
-                  key={link.page}
-                  onClick={() => handleNav(link.page)}
-                  className={`text-left text-base font-medium font-[Inter] ${
-                    currentPage === link.page
-                      ? 'text-emerald-600'
-                      : 'text-gray-700'
-                  }`}
-                >
-                  {link.label}
-                </button>
-              ))}
-              <hr className="border-gray-200" />
-              {user ? (
-                <span className="text-sm font-medium text-gray-700 font-[Inter]">
-                  {user.name}
-                </span>
-              ) : (
-                <button
-                  onClick={() => {
-                    setShowAuth(true);
-                    setMobileOpen(false);
-                  }}
-                  className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors font-[Inter] w-fit"
-                >
-                  Se Connecter
-                </button>
-              )}
-            </div>
-          </div>
+      {open && (
+        <div className="border-t border-ink/10 bg-paper px-6 pb-5 pt-2 md:hidden">
+          {links.map((l) => (
+            <button
+              key={l.page}
+              onClick={() => go(l.page)}
+              className={`block w-full rounded-[10px] px-3 py-3.5 text-left text-base font-semibold ${
+                currentPage === l.page ? 'bg-petrol-50 text-petrol-700' : 'text-ink-2'
+              }`}
+            >
+              {l.label}
+            </button>
+          ))}
+          {user ? (
+            <span className="mt-2 block rounded-[10px] bg-petrol-50 px-3 py-3.5 text-base font-semibold text-petrol-700">
+              {user.name}
+            </span>
+          ) : (
+            <button
+              onClick={() => {
+                setShowAuth(true);
+                setOpen(false);
+              }}
+              className="pressable mt-3 w-full rounded-[10px] bg-ink px-3 py-3.5 text-base font-bold text-paper"
+            >
+              Connexion
+            </button>
+          )}
         </div>
       )}
-    </nav>
+    </header>
   );
 }

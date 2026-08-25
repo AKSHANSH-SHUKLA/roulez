@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Settings2, Fuel, Briefcase, Eye } from 'lucide-react';
+import { Settings2, Fuel, Briefcase, ArrowUpRight } from 'lucide-react';
+import { Tilt, Reveal } from '@/components/motion/tilt';
 import { useAppStore, useBookingStore } from '@/lib/store';
 import type { RentalCar } from '@/lib/types';
 
@@ -81,13 +82,12 @@ export default function FeaturedCars() {
 
   if (loading) {
     return (
-      <section className="py-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-4 font-[Inter]">Voitures Populaires</h2>
-          <p className="text-gray-500 text-center mb-10 font-[Inter]">Decouvrez nos offres les plus reservees</p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section className="bg-paper-2 py-24">
+        <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+          <div className="h-10 w-64 rounded-lg bg-petrol-50" />
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-80 rounded-xl bg-gray-200 animate-pulse" />
+              <div key={i} className="h-80 rounded-[20px] bg-petrol-50" />
             ))}
           </div>
         </div>
@@ -96,76 +96,73 @@ export default function FeaturedCars() {
   }
 
   return (
-    <section className="py-16 px-4">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-4 font-[Inter]">Voitures Populaires</h2>
-        <p className="text-gray-500 text-center mb-10 font-[Inter]">
-          Decouvrez nos offres les plus reservees
-        </p>
+    <section className="relative overflow-hidden bg-paper-2 py-24 md:py-32">
+      <div aria-hidden className="pointer-events-none absolute right-0 top-0 h-full w-2 bg-saffron-500" />
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+        <Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <h2 className="font-poster max-w-[14ch] text-[clamp(2rem,4.6vw,3.6rem)] text-ink">
+              Les plus reservees
+            </h2>
+            <p className="max-w-[32ch] text-[15px] leading-relaxed text-ink-2">
+              Prix par jour, taxes comprises. Le modele exact peut varier.
+            </p>
+          </div>
+        </Reveal>
+
+        <div className="stage mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {cars.map((car, idx) => {
             const imageUrl = car.imageUrl || fallbackImages[idx % fallbackImages.length];
-            const borderColor = categoryBorderColor[car.category] || 'border-l-gray-400';
-
             return (
               <motion.div
                 key={car.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, transform: 'translate3d(0,26px,0)' }}
+                whileInView={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
                 viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.4, delay: idx * 0.1 }}
-                onClick={() => handleCardClick(car)}
-                className={`bg-white rounded-xl border border-gray-200 border-l-4 ${borderColor} overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group`}
+                transition={{ duration: 0.58, delay: Math.min(idx, 5) * 0.07, ease: [0.23, 1, 0.32, 1] }}
               >
-                <div className="h-44 w-full overflow-hidden">
-                  <img
-                    src={imageUrl}
-                    alt={car.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="p-4">
-                  <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-semibold text-gray-900 font-[Inter]">{car.name}</h3>
-                    <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full font-[Inter]">
-                      {categoryLabels[car.category] || car.category}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-500 mb-3 font-[Inter]">{car.supplierName}</p>
-
-                  <div className="flex items-center gap-4 text-xs text-gray-500 mb-3 font-[Inter]">
-                    <span className="flex items-center gap-1">
-                      <Settings2 size={14} />
-                      {transmissionLabels[car.transmission] || car.transmission}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Fuel size={14} />
-                      {fuelLabels[car.fuel] || car.fuel}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Briefcase size={14} />
-                      {car.bags} valises
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xl font-bold text-emerald-600 font-[Inter]">
-                      {car.pricePerDay} EUR/jour
-                    </span>
-                  </div>
-
+                <Tilt max={6} scale={1.015}>
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCardClick(car);
-                    }}
-                    className="w-full py-2 rounded-lg border border-emerald-600 text-emerald-600 text-sm font-medium hover:bg-emerald-50 transition-colors flex items-center justify-center gap-2 font-[Inter]"
+                    onClick={() => handleCardClick(car)}
+                    className="pressable group flex h-full w-full flex-col overflow-hidden rounded-[20px] bg-paper text-left shadow-[0_20px_44px_-28px_rgba(20,35,28,0.6)] transition-shadow duration-300 hover:shadow-[0_34px_66px_-30px_rgba(20,35,28,0.7)]"
                   >
-                    <Eye size={14} />
-                    Voir Details
+                    <div className="relative h-48 overflow-hidden bg-petrol-50">
+                      <img
+                        src={imageUrl}
+                        alt={car.name}
+                        className="h-full w-full object-cover transition-transform duration-[600ms] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.07]"
+                      />
+                      <span className="label-tight absolute left-4 top-4 rounded-full bg-paper/95 px-3 py-1 text-[10px] text-ink">
+                        {categoryLabels[car.category] || car.category}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-1 flex-col p-6">
+                      <h3 className="font-poster-md text-xl text-ink">{car.name}</h3>
+                      <p className="mt-1 text-sm text-ink-2">
+                        ou similaire &middot; {car.supplierName}
+                      </p>
+
+                      <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-[13px] text-ink-2">
+                        <li className="flex items-center gap-1.5"><Settings2 size={14} className="text-petrol-500" />{transmissionLabels[car.transmission] || car.transmission}</li>
+                        <li className="flex items-center gap-1.5"><Fuel size={14} className="text-petrol-500" />{fuelLabels[car.fuel] || car.fuel}</li>
+                        <li className="flex items-center gap-1.5"><Briefcase size={14} className="text-petrol-500" /><span className="nums">{car.bags}</span> valises</li>
+                      </ul>
+
+                      <div className="mt-auto flex items-end justify-between border-t border-ink/10 pt-5">
+                        <span className="nums font-poster-md text-2xl text-petrol-600">
+                          {car.pricePerDay} EUR
+                          <span className="ml-1 text-sm font-medium text-ink-2">/jour</span>
+                        </span>
+                        <span className="flex items-center gap-1 text-sm font-bold text-ink transition-colors duration-200 group-hover:text-petrol-600">
+                          Voir
+                          <ArrowUpRight size={16} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                        </span>
+                      </div>
+                    </div>
                   </button>
-                </div>
+                </Tilt>
               </motion.div>
             );
           })}
