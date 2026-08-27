@@ -71,7 +71,9 @@ export default function SearchResults() {
     }
     async function fetchCars() {
       try {
-        const res = await fetch('/api/cars');
+        const loc = filters.pickupLocationId || filters.pickupLocation || '';
+        const url = loc ? `/api/cars?pickupLocation=${encodeURIComponent(loc)}` : '/api/cars';
+        const res = await fetch(url);
         if (res.ok) {
           const json = await res.json();
           const list: RentalCar[] = Array.isArray(json) ? json : (json?.data ?? []);
@@ -84,7 +86,7 @@ export default function SearchResults() {
       }
     }
     fetchCars();
-  }, [searchResults]);
+  }, [searchResults, filters.pickupLocationId, filters.pickupLocation]);
 
   const offers = useMemo(() => {
     let list = allCars.map((car) => {

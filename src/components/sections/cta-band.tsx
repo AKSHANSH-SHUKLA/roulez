@@ -7,10 +7,10 @@ import { Reveal } from '@/components/motion/tilt';
 export default function CtaBand() {
   const { setPage } = useAppStore();
   return (
-    <section className="relative overflow-hidden bg-azure-700 py-20 md:py-24">
+    <section className="relative overflow-hidden bg-terra-700 py-20 md:py-24">
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -right-20 -top-24 h-80 w-80 rounded-full bg-azure-500/60" />
-        <div className="absolute -bottom-32 -left-10 h-96 w-96 rounded-full bg-petrol-700/50" />
+        <div className="absolute -right-20 -top-24 h-80 w-80 rounded-full bg-terra-500/70" />
+        <div className="absolute -bottom-32 -left-10 h-96 w-96 rounded-full bg-ink/25" />
       </div>
       <div className="relative mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-8 px-6 md:px-10">
         <div>
@@ -20,7 +20,7 @@ export default function CtaBand() {
             </h2>
           </Reveal>
           <Reveal delay={0.07}>
-            <p className="mt-4 max-w-[48ch] text-[16px] leading-relaxed text-azure-300">
+            <p className="mt-4 max-w-[48ch] text-[16px] leading-relaxed text-terra-300">
               Publiez votre annonce et touchez les acheteurs de toute la France.
             </p>
           </Reveal>

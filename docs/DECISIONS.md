@@ -133,3 +133,41 @@ titres larges, photos reelles. Tokens figes dans `docs/DESIGN-SYSTEM.md`.
 
 **Consequence.** Les ecrans encore en `emerald-*` et `gray-*` detonnent tant
 qu'ils n'ont pas ete repris. C'est de la dette identifiee, pas un choix.
+
+---
+
+## ADR-008 — Couvrir toute la France, pas quinze villes
+
+**Date** : 2026-08-27 · **Statut** : accepte
+
+**Contexte.** La recherche ne connaissait que 15 lieux. Taper « tou » proposait
+Toulouse mais pas **Tours** ; l'Indre-et-Loire, les chateaux de la Loire et la
+quasi-totalite du pays n'existaient pas. Pour un site qui promet « toute la
+France », c'est le defaut le plus visible possible.
+
+**Decision.** Un jeu de 485 lieux genere par script : 18 regions, 101
+departements, 253 villes, 53 aeroports, 60 gares. Recherche insensible aux
+accents et aux tirets, avec classement par pertinence puis par importance.
+
+**Consequence.** 485 lieux ne peuvent pas avoir 485 catalogues ecrits a la main.
+`src/lib/fleet.ts` derive la flotte d'un lieu de facon deterministe, avec deux
+effets vrais dans la realite : surcout aeroport de 18 %, et moins de choix dans
+une petite ville. C'est de la demonstration, mais coherente et stable.
+
+---
+
+## ADR-009 — Rythme de couleurs sur l'accueil
+
+**Date** : 2026-08-27 · **Statut** : accepte
+
+**Contexte.** La palette compte six teintes, mais les six premieres sections
+n'utilisaient que vert et creme en alternance ; le bleu et la terracotta
+n'apparaissaient qu'en bas de page. Resultat : une page qui parait monotone
+alors que le systeme de couleurs ne l'est pas.
+
+**Decision.** Une sequence de dix fonds documentee dans
+`docs/DESIGN-SYSTEM.md`, section 4. Regle : jamais deux sections voisines dans
+la meme famille, alternance sombre / clair conservee.
+
+**Consequence.** Ajouter une section demande de choisir sa place dans la
+sequence, pas seulement son contenu.

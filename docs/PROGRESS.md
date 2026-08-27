@@ -17,9 +17,9 @@ chemin vers un site exploitable, **0 EUR** depense a ce jour.
 | Domaine | Etat | Detail |
 | --- | --- | --- |
 | Accueil | Fait | Trois activites visibles : Louer, Acheter/Vendre, Assurance |
-| Recherche de lieu | Fait | Autocompletion sur agences, aeroports, gares |
+| Recherche de lieu | Fait | Toute la France : 101 departements, 18 regions, 253 villes, 53 aeroports, 60 gares. Recherche sans accents |
 | Regles de duree | Fait | 24 h minimum, 6 mois maximum, message d'erreur explicite |
-| Liste de resultats | Fait | 70 vehicules, filtres, tri par **total** |
+| Liste de resultats | Fait | Flotte et prix derives du lieu (aeroport +18 %, petite ville moins de choix), filtres, tri par **total** |
 | Conditions commerciales | Fait | Total, caution, franchise, annulation, note, cartes, carburant, kilometrage — en liste **et** en fiche |
 | Fiche vehicule | Fait | Conditions detaillees, option assurance, recapitulatif de prix |
 | Assurance | Fait | Section d'accueil et page dediee |
@@ -89,3 +89,4 @@ l'immatriculation Atout France (voir `docs/PRD.md`, section 6).
 | 2026-08-27 | Refonte visuelle « affiche de voyage » de l'accueil (ADR-007) |
 | 2026-08-27 | Correction du debordement horizontal du pied de page, filet de securite sans JavaScript |
 | 2026-08-27 | Conditions commerciales, bornes de duree, section assurance separee, selecteur Louer/Acheter/Vendre (ADR-003, 004, 005) |
+| 2026-08-27 | Couverture de toute la France (485 lieux), flotte et prix par lieu, rythme de couleurs de l'accueil, parallaxe du heros rendue visible |

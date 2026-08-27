@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RentalCar } from '@/lib/types';
+import { findLocation } from '@/lib/locations';
+import { fleetAt } from '@/lib/fleet';
 
 const cars: RentalCar[] = [
   // Economy (car-1 to car-12)
@@ -88,6 +90,15 @@ const cars: RentalCar[] = [
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   let filtered = [...cars];
+
+  // Lieu de prise en charge : accepte un identifiant ("air-aeroport-tours-val-de-loire")
+  // ou un nom libre ("Tours", "Indre-et-Loire", "37"). La flotte et les prix sont
+  // derives du lieu dans src/lib/fleet.ts.
+  const pickupLocation = searchParams.get('pickupLocation');
+  if (pickupLocation) {
+    const loc = findLocation(pickupLocation);
+    if (loc) filtered = fleetAt(filtered, loc);
+  }
 
   const category = searchParams.get('category');
   if (category) {

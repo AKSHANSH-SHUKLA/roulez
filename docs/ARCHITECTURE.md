@@ -68,6 +68,34 @@ les trois surfaces disent la meme chose.
 Quand un vrai flux fournisseur arrivera, seule l'implementation de `termsFor`
 change. Les composants ne bougent pas. C'est le but de la separation.
 
+### `src/lib/locations.ts`
+
+485 lieux couvrant toute la France : 18 regions, 101 departements, 253 villes
+(prefectures, grandes villes, villes touristiques), 53 aeroports, 60 gares.
+
+Chaque entree porte un champ `q` : une chaine normalisee (sans accents, sans
+tirets) qui concatene nom, ville, departement, numero de departement et region.
+C'est ce qui permet a « indre » de trouver Tours, a « 37 » de trouver
+Indre-et-Loire, et a « ile de france » de trouver Roissy sans que l'utilisateur
+tape le moindre accent.
+
+`searchLocations()` classe les resultats : correspondance exacte, puis debut de
+nom, puis debut de mot, puis n'importe ou. A egalite, les grandes villes et les
+aeroports passent devant.
+
+Le fichier est **genere** par `scripts/build_locations.py`. Pour ajouter des
+lieux, modifier le script et regenerer, pas le TypeScript.
+
+### `src/lib/fleet.ts`
+
+`fleetAt(cars, location)` derive la flotte disponible a un lieu, de facon
+deterministe : le meme lieu renvoie toujours les memes vehicules aux memes prix.
+Un aeroport coute 18 % plus cher (frais d'aeroport), une gare 8 %. Une metropole
+propose tout le catalogue, une ville moyenne 65 %, une petite ville 38 %.
+
+Ce fichier disparait le jour ou un vrai flux fournisseur donne la disponibilite
+reelle. Rien d'autre ne bouge.
+
 ### `src/lib/store.ts`
 
 Trois stores Zustand, volontairement separes :
@@ -103,9 +131,9 @@ Toutes en memoire, toutes au format `{ success, data }`.
 
 | Route | Contenu |
 | --- | --- |
-| `GET /api/cars` | 70 vehicules, filtres `pickupLocation`, `category`, `limit` |
+| `GET /api/cars` | 70 vehicules de reference. `pickupLocation` (identifiant ou nom libre) derive la flotte du lieu via `fleet.ts` |
 | `GET /api/destinations` | 11 villes |
-| `GET /api/locations?q=` | Agences, aeroports, gares |
+| `GET /api/locations?q=` | Recherche dans les 485 lieux de France |
 | `GET /api/insurance` | 3 formules |
 | `GET /api/sale-listings` | Annonces d'occasion |
 | `POST /api/bookings` | Cree une reservation en memoire, renvoie une reference |

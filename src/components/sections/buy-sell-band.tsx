@@ -17,6 +17,7 @@ const panels = [
     ],
     cta: 'Voir les annonces',
     tone: 'bg-paper text-ink',
+    accentText: 'text-terra-500',
     accent: 'bg-petrol-600 text-paper hover:bg-petrol-700',
   },
   {
@@ -31,6 +32,7 @@ const panels = [
     ],
     cta: 'Deposer une annonce',
     tone: 'bg-ink text-paper',
+    accentText: 'text-saffron-500',
     accent: 'bg-saffron-500 text-ink hover:bg-saffron-300',
   },
 ];
@@ -39,8 +41,8 @@ export default function BuySellBand() {
   const { setPage } = useAppStore();
 
   return (
-    <section id="achat-vente" className="relative overflow-hidden bg-paper py-24 md:py-32">
-      <div aria-hidden className="pointer-events-none absolute -right-32 top-10 h-[26rem] w-[26rem] rounded-full bg-saffron-300/45" />
+    <section id="achat-vente" className="relative overflow-hidden bg-saffron-300 py-24 md:py-32">
+      <div aria-hidden className="pointer-events-none absolute -right-32 top-10 h-[26rem] w-[26rem] rounded-full bg-terra-300/55" />
 
       <div className="relative mx-auto max-w-[1400px] px-6 md:px-10">
         <Reveal>
@@ -58,14 +60,14 @@ export default function BuySellBand() {
           {panels.map((p, i) => (
             <Reveal key={p.id} delay={i * 0.08}>
               <div className={`flex h-full flex-col rounded-[20px] p-8 md:p-10 ${p.tone}`}>
-                <span className="nums font-poster text-4xl text-saffron-500">{p.kicker}</span>
+                <span className={`nums font-poster text-4xl ${p.accentText}`}>{p.kicker}</span>
                 <h3 className="font-poster mt-4 text-[clamp(1.8rem,3.2vw,2.6rem)]">{p.title}</h3>
                 <p className="mt-4 max-w-[42ch] text-[15px] leading-relaxed opacity-80">{p.body}</p>
 
                 <ul className="mt-7 space-y-3">
                   {p.points.map((pt) => (
                     <li key={pt.label} className="flex items-center gap-2.5 text-[15px]">
-                      <pt.icon size={17} className="shrink-0 text-saffron-500" />
+                      <pt.icon size={17} className={`shrink-0 ${p.accentText}`} />
                       {pt.label}
                     </li>
                   ))}

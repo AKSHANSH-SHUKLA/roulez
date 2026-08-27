@@ -1,9 +1,12 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Search, MapPin, Calendar, ShieldCheck, Ban, Clock3, AlertCircle, Car, Tag } from 'lucide-react';
+import {
+  Search, MapPin, Calendar, ShieldCheck, Ban, Clock3, AlertCircle, Car, Tag,
+  Plane, TrainFront, Building2, Map,
+} from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Tilt } from '@/components/motion/tilt';
+import { Tilt, useCalm } from '@/components/motion/tilt';
 import { useAppStore, useBookingStore } from '@/lib/store';
 import { checkRentalDuration, DURATION_HINT, formatDuration, isoDatePlus } from '@/lib/rental-rules';
 import type { Location, RentalCar } from '@/lib/types';
@@ -73,7 +76,7 @@ export default function HeroSearch() {
       return;
     }
     try {
-      const res = await fetch(`/api/locations?q=${encodeURIComponent(query)}`);
+      const res = await fetch(`/api/locations?q=${encodeURIComponent(query)}&limit=8`);
       if (res.ok) {
         const json = await res.json();
         // L'API renvoie { success, data } — on accepte aussi un tableau brut
@@ -97,9 +100,10 @@ export default function HeroSearch() {
   };
 
   const selectLocation = (loc: Location) => {
-    setLocationQuery(`${loc.name} - ${loc.city}`);
+    setLocationQuery(loc.name);
     setSelectedLocation(loc.id);
     setShowDropdown(false);
+    setDateError(null);
   };
 
   const runSearch = async (locId: string) => {
@@ -112,7 +116,12 @@ export default function HeroSearch() {
     setDateError(null);
 
     setLoading(true);
-    setFilters({ pickupLocation: locId, pickupDate, returnDate });
+    setFilters({
+      pickupLocation: locationQuery.trim() || locId,
+      pickupLocationId: locId,
+      pickupDate,
+      returnDate,
+    });
 
     try {
       const params = new URLSearchParams();
@@ -150,6 +159,13 @@ export default function HeroSearch() {
     runSearch(city);
   };
 
+  const suggestionIcon = (type: Location['type']) => {
+    if (type === 'airport') return Plane;
+    if (type === 'train_station') return TrainFront;
+    if (type === 'department' || type === 'region') return Map;
+    return Building2;
+  };
+
   // Dates par defaut : demain, retour 4 jours plus tard
   useEffect(() => {
     setPickupDate(isoDatePlus(1));
@@ -158,9 +174,16 @@ export default function HeroSearch() {
 
   const duration = checkRentalDuration(pickupDate, returnDate);
 
+  // Parallaxe. Les valeurs sont volontairement grandes : sur une plage de 700px
+  // avec 120px de deplacement, personne ne voyait rien bouger. Le heros ne fait
+  // qu'un ecran de haut, donc tout doit se jouer sur les 500 premiers pixels.
+  const calm = useCalm();
   const { scrollY } = useScroll();
-  const sunY = useTransform(scrollY, [0, 700], [0, 120]);
-  const stackY = useTransform(scrollY, [0, 700], [0, -60]);
+  const sunY = useTransform(scrollY, [0, 500], [0, 210]);
+  const sunScale = useTransform(scrollY, [0, 500], [1, 1.25]);
+  const stackY = useTransform(scrollY, [0, 500], [0, -130]);
+  const fieldY = useTransform(scrollY, [0, 500], [0, 80]);
+  const textY = useTransform(scrollY, [0, 500], [0, -45]);
 
   const field =
     'w-full rounded-[12px] border border-petrol-100 bg-paper px-3 py-3 text-base text-ink ' +
@@ -173,8 +196,10 @@ export default function HeroSearch() {
     <section className="relative overflow-hidden bg-petrol-700">
       {/* poster field: hard-edged shapes, no blurred blobs */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 -top-32 h-[34rem] w-[34rem] rounded-full bg-petrol-600" />
-        <div className="absolute -bottom-56 left-1/4 h-[40rem] w-[40rem] rounded-full bg-petrol-900/70" />
+        <motion.div style={calm ? undefined : { y: fieldY }} className="absolute inset-0">
+          <div className="absolute -left-40 -top-32 h-[34rem] w-[34rem] rounded-full bg-petrol-600" />
+          <div className="absolute -bottom-56 left-1/4 h-[40rem] w-[40rem] rounded-full bg-petrol-900/70" />
+        </motion.div>
         <div className="absolute right-0 top-0 h-full w-[38%] bg-petrol-600/45" />
         <svg className="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden>
           <path d="M0 120V64c220 34 420 34 620 0S1180 8 1440 52v68z" fill="#faf5ec" />
@@ -183,7 +208,7 @@ export default function HeroSearch() {
 
       <div className="relative mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-12 px-6 pb-28 pt-20 md:px-10 lg:grid-cols-12 lg:gap-8 lg:pb-36 lg:pt-24">
         {/* ---------- left: thesis + control ---------- */}
-        <div className="lg:col-span-7">
+        <motion.div style={calm ? undefined : { y: textY }} className="lg:col-span-7">
           <h1 className="font-poster max-w-[13ch] text-[clamp(2.6rem,6.4vw,5.1rem)] text-paper">
             {head.title}
           </h1>
@@ -237,7 +262,7 @@ export default function HeroSearch() {
                         role="combobox"
                         aria-expanded={showDropdown}
                         aria-controls="lieu-suggestions"
-                        placeholder="Paris, Nice, aéroport de Lyon"
+                        placeholder="Ville, aéroport, gare ou département"
                         className={field + ' pl-10'}
                       />
                     </div>
@@ -252,16 +277,22 @@ export default function HeroSearch() {
                         role="listbox"
                         className="absolute left-0 right-0 top-full z-30 mt-2 max-h-64 overflow-y-auto rounded-[12px] border border-petrol-100 bg-paper shadow-[0_18px_40px_-18px_rgba(7,47,39,0.5)]"
                       >
-                        {locations.map((loc) => (
-                          <button
-                            key={loc.id}
-                            onClick={() => selectLocation(loc)}
-                            className="block w-full border-b border-petrol-50 px-4 py-3 text-left last:border-0 transition-colors duration-150 hover:bg-petrol-50"
-                          >
-                            <span className="block text-[15px] font-semibold text-ink">{loc.name}</span>
-                            <span className="block text-[13px] text-ink-2">{loc.city}</span>
-                          </button>
-                        ))}
+                        {locations.map((loc) => {
+                          const Icon = suggestionIcon(loc.type);
+                          return (
+                            <button
+                              key={loc.id}
+                              onClick={() => selectLocation(loc)}
+                              className="flex w-full items-center gap-3 border-b border-petrol-50 px-4 py-3 text-left last:border-0 transition-colors duration-150 hover:bg-petrol-50"
+                            >
+                              <Icon size={16} className="shrink-0 text-petrol-500" />
+                              <span className="min-w-0 flex-1">
+                                <span className="block truncate text-[15px] font-semibold text-ink">{loc.name}</span>
+                                <span className="block truncate text-[13px] text-ink-2">{loc.address}</span>
+                              </span>
+                            </button>
+                          );
+                        })}
                       </motion.div>
                     )}
                   </div>
@@ -337,6 +368,9 @@ export default function HeroSearch() {
                       {city}
                     </button>
                   ))}
+                  <span className="w-full text-[12px] text-ink-2">
+                    Toute la France : 101 départements, 250 villes, 53 aéroports et 60 gares.
+                  </span>
                 </div>
               </>
             )}
@@ -406,12 +440,16 @@ export default function HeroSearch() {
             <li className="flex items-center gap-2"><Ban size={17} className="text-saffron-300" />Annulation gratuite</li>
             <li className="flex items-center gap-2"><Clock3 size={17} className="text-saffron-300" />Assistance 24/7</li>
           </ul>
-        </div>
+        </motion.div>
 
         {/* ---------- right: poster stack, depth on pointer ---------- */}
         <div className="relative hidden lg:col-span-5 lg:block">
-          <motion.div aria-hidden style={{ y: sunY }} className="absolute -right-10 -top-24 h-72 w-72 rounded-full bg-saffron-500" />
-          <motion.div style={{ y: stackY }} className="stage-far relative">
+          <motion.div
+            aria-hidden
+            style={calm ? undefined : { y: sunY, scale: sunScale }}
+            className="absolute -right-4 -top-32 h-[24rem] w-[24rem] rounded-full bg-saffron-500"
+          />
+          <motion.div style={calm ? undefined : { y: stackY }} className="stage-far relative">
             <Tilt max={11} scale={1.015} className="[transform-style:preserve-3d]">
               <div className="relative h-[30rem] w-full">
                 <div className="absolute right-6 top-0 h-64 w-[19rem] overflow-hidden rounded-[20px] shadow-[0_30px_60px_-24px_rgba(7,47,39,0.8)] [transform:translateZ(70px)]">

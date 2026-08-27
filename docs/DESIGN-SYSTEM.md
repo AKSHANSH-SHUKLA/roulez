@@ -55,7 +55,29 @@ a 15 ou 16px, jamais en dessous de 12px pour une information lisible.
 - Conteneur : `max-w-[1400px]`, `px-6 md:px-10`.
 - Elevation : ombre **ou** bordure, jamais les deux sur le meme element.
 
-## 4. Motion
+## 4. Rythme des couleurs sur l'accueil
+
+Regle : **jamais deux sections de suite dans la meme famille de couleur**, et on
+alterne sombre et clair. La page a longtemps alterne vert et creme uniquement,
+ce qui la faisait paraitre monotone alors que la palette compte six teintes.
+
+| # | Section | Fond |
+| --- | --- | --- |
+| 1 | Hero | `petrol-700` — vert profond |
+| 2 | Bandeau loueurs | `saffron-500` — jaune |
+| 3 | Destinations | `paper` — creme |
+| 4 | Comment ca marche | `terra-500` — terracotta |
+| 5 | Vehicules populaires | `paper-2` — creme chaud |
+| 6 | Achat & Vente | `saffron-300` — jaune doux |
+| 7 | Assurance | `azure-700` — bleu |
+| 8 | Temoignages | `paper` — creme, cartes teintees jaune/bleu/terracotta |
+| 9 | Appel a l'action | `terra-700` — rouille profonde |
+| 10 | Pied de page | `ink` — presque noir |
+
+Ajouter une section = choisir un fond qui ne repete pas celui de ses voisins, et
+mettre a jour ce tableau.
+
+## 5. Motion
 
 Reglages dans `globals.css` et `components/motion/tilt.tsx`.
 
@@ -71,7 +93,14 @@ Reglages dans `globals.css` et `components/motion/tilt.tsx`.
   commit, pas dans une passe ulterieure.
 - Seules `transform` et `opacity` sont animees. Pas de `transition: all`.
 
-## 5. Pieges deja rencontres
+Parallaxe du heros : les valeurs doivent etre grandes pour se voir. Une premiere
+version deplacait le soleil de 120px sur 700px de defilement, et personne ne
+remarquait le mouvement. La version actuelle joue sur les 500 premiers pixels,
+avec 210px de deplacement et une mise a l'echelle : le soleil retarde d'environ
+130px sur le reste de la page, ce qui est lisible. Tout est neutralise sous
+`prefers-reduced-motion` via le hook `useCalm()`.
+
+## 6. Pieges deja rencontres
 
 - **Debordement horizontal.** Une colonne de pied de page en `md:col-span-1`
   avec `whitespace-nowrap` a decale toute la page de 35px. Verifier

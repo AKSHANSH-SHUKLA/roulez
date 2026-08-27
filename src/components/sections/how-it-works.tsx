@@ -25,10 +25,10 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="relative overflow-hidden bg-petrol-700 py-24 md:py-32">
+    <section className="relative overflow-hidden bg-terra-500 py-24 md:py-32">
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -right-32 top-10 h-[28rem] w-[28rem] rounded-full bg-petrol-600" />
-        <div className="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-terra-500/25" />
+        <div className="absolute -right-32 top-10 h-[28rem] w-[28rem] rounded-full bg-terra-700/45" />
+        <div className="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-saffron-500/30" />
       </div>
 
       <div className="relative mx-auto max-w-[1400px] px-6 md:px-10">
@@ -45,11 +45,11 @@ export default function HowItWorks() {
                 className="group grid grid-cols-1 items-start gap-6 border-t border-paper/20 py-9 md:grid-cols-12 md:gap-10"
                 style={{ marginLeft: `calc(${i} * 5%)` }}
               >
-                <span className="nums font-poster col-span-2 text-[clamp(2.4rem,5vw,4rem)] leading-none text-saffron-500 transition-colors duration-300 group-hover:text-saffron-300">
+                <span className="nums font-poster col-span-2 text-[clamp(2.4rem,5vw,4rem)] leading-none text-paper transition-colors duration-300 group-hover:text-saffron-300">
                   {s.n}
                 </span>
                 <h3 className="font-poster-md col-span-3 text-2xl text-paper md:text-3xl">{s.title}</h3>
-                <p className="col-span-7 max-w-[62ch] text-[15px] leading-relaxed text-petrol-100">
+                <p className="col-span-7 max-w-[62ch] text-[15px] leading-relaxed text-paper/85">
                   {s.description}
                 </p>
               </div>

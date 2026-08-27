@@ -4,6 +4,22 @@ import { useRef, useState, useEffect, type ReactNode } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
 /**
+ * True si l'utilisateur a demande moins d'animation dans son systeme.
+ * Toute animation de deplacement doit passer par ce garde-fou.
+ */
+export function useCalm(): boolean {
+  const [calm, setCalm] = useState(false);
+  useEffect(() => {
+    const m = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const sync = () => setCalm(m.matches);
+    sync();
+    m.addEventListener('change', sync);
+    return () => m.removeEventListener('change', sync);
+  }, []);
+  return calm;
+}
+
+/**
  * Pointer-driven 3D tilt.
  * Purpose: delight on rare/first-view surfaces (hero, cards you browse, not act on).
  * Gated behind a fine pointer with hover, and off entirely under reduced motion.

@@ -2,8 +2,12 @@ export interface Location {
   id: string;
   name: string;
   city: string;
-  type: 'airport' | 'city' | 'train_station';
+  /** 'department' et 'region' couvrent toute la France, pas seulement les agences */
+  type: 'airport' | 'city' | 'train_station' | 'department' | 'region';
+  /** libelle secondaire affiche sous le nom : "Aeroport · Centre-Val de Loire" */
   address: string;
+  region?: string;
+  department?: string;
 }
 
 export interface Supplier {
@@ -87,7 +91,10 @@ export interface InsurancePlan {
 }
 
 export interface SearchFilters {
+  /** libelle lisible, affiche en titre de la page de resultats */
   pickupLocation?: string;
+  /** identifiant du lieu, envoye a l'API */
+  pickupLocationId?: string;
   pickupDate?: string;
   returnDate?: string;
   category?: string;

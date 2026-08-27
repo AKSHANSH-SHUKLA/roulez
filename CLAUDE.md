@@ -34,22 +34,26 @@ correction de bug. Les changer demande une entree dans `docs/DECISIONS.md`.
 3. **Un seul endroit valide la duree.** `checkRentalDuration()` dans
    `src/lib/rental-rules.ts`. Minimum 24 heures, maximum 6 mois (182 jours).
    Toute surface qui accepte des dates de location appelle cette fonction.
-4. **Les reponses d'API ont la forme `{ success, data }`.** Cote client,
+4. **Un seul endroit connait les lieux.** `src/lib/locations.ts` (485 lieux :
+   101 departements, 18 regions, 253 villes, 53 aeroports, 60 gares) et
+   `src/lib/fleet.ts` (quelle flotte et quel prix a quel lieu). Ne jamais coder
+   en dur une liste de villes dans un composant.
+5. **Les reponses d'API ont la forme `{ success, data }`.** Cote client,
    toujours lire avec `const list = Array.isArray(json) ? json : (json?.data ?? [])`.
    Ne jamais faire `setState(await res.json())` : c'est ce qui a mis le site
    hors ligne une fois (`destinations.map is not a function`), et TypeScript ne
    l'attrape pas parce que `res.json()` est `any`.
-5. **Trois activites, trois surfaces distinctes.** Location, Achat & Vente,
+6. **Trois activites, trois surfaces distinctes.** Location, Achat & Vente,
    Assurance. L'assurance ne se dilue pas dans le tunnel de location : elle a sa
    propre page (`currentPage === 'insurance'`) et sa propre section sur
    l'accueil. La fiche vehicule ne garde qu'un choix d'option et un lien vers la
    page assurance.
-6. **Aucun prix, aucune condition, aucune note n'est inventee dans le JSX.**
+7. **Aucun prix, aucune condition, aucune note n'est inventee dans le JSX.**
    Les donnees viennent des routes `/api/*` ou du registre `SUPPLIERS`.
-7. **Palette et typo figees** — voir `docs/DESIGN-SYSTEM.md`. Pas de classes
+8. **Palette et typo figees** — voir `docs/DESIGN-SYSTEM.md`. Pas de classes
    `emerald-*`, `gray-*`, `blue-*` ni de `font-[Inter]` : ce sont les restes de
    l'ancienne version et ils doivent disparaitre, pas se propager.
-8. **Roulez est un comparateur, pas un loueur ni un courtier.** Aucun texte de
+9. **Roulez est un comparateur, pas un loueur ni un courtier.** Aucun texte de
    l'interface ne doit laisser croire que Roulez assure, loue ou encaisse. Voir
    `docs/PRD.md`, section contraintes legales.
 
@@ -72,6 +76,8 @@ src/
     store.ts             etat global Zustand (3 stores)
     rental-rules.ts      duree : bornes, calcul, validation, formatage
     rental-terms.ts      loueurs, conditions commerciales, devis
+    locations.ts         toute la France (genere par /root/gen/build_locations.py)
+    fleet.ts             flotte et prix derives du lieu de prise en charge
 ```
 
 ## 3. Navigation
