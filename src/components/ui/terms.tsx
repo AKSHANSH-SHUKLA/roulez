@@ -1,15 +1,15 @@
 'use client';
 
 import { Star, Ban, CreditCard, Fuel, Gauge, Lock, ShieldAlert } from 'lucide-react';
-import {
-  cardsLabel, euro, fuelPolicyHelp, fuelPolicyLabels, mileageLabel,
-  type RentalTerms,
-} from '@/lib/rental-terms';
+import { fuelPolicyKey, type RentalTerms } from '@/lib/rental-terms';
+import { useDict, useFormat, fmt } from '@/lib/i18n';
 
-/* Affichage des conditions commerciales. Ces composants ne calculent rien :
-   ils recoivent un RentalTerms produit par src/lib/rental-terms.ts. */
+/* Affichage des conditions commerciales. Ces composants ne calculent rien et
+   ne contiennent aucun texte : tout vient de RentalTerms et du dictionnaire. */
 
 export function RatingStars({ rating, reviews, compact = false }: { rating: number; reviews?: number; compact?: boolean }) {
+  const d = useDict();
+  const f = useFormat();
   const full = Math.floor(rating);
   const half = rating - full >= 0.5;
   return (
@@ -25,38 +25,58 @@ export function RatingStars({ rating, reviews, compact = false }: { rating: numb
       </span>
       <span className="nums text-[13px] font-bold text-ink">{rating.toFixed(1)}</span>
       {reviews != null && (
-        <span className="nums text-[12px] text-ink-2">({reviews.toLocaleString('fr-FR')} avis)</span>
+        <span className="nums text-[12px] text-ink-2">({f.number(reviews)} {d.common.reviews})</span>
       )}
-      <span className="sr-only">Note {rating.toFixed(1)} sur 5{reviews != null ? `, ${reviews} avis` : ''}</span>
+      <span className="sr-only">
+        {fmt(d.terms.ratingAria, { rating: rating.toFixed(1), count: reviews ?? 0 })}
+      </span>
     </span>
   );
 }
 
 export function CancellationBadge({ terms, compact = false }: { terms: RentalTerms; compact?: boolean }) {
+  const d = useDict();
   if (!terms.freeCancellation) {
     return (
       <span className={`label-tight inline-flex items-center gap-1.5 rounded-full bg-ink/8 px-2.5 py-1 text-ink-2 ${compact ? 'text-[10px]' : 'text-[11px]'}`}>
         <Ban size={compact ? 11 : 12} />
-        Annulation payante
+        {d.terms.paidCancellation}
       </span>
     );
   }
   return (
     <span className={`label-tight inline-flex items-center gap-1.5 rounded-full bg-petrol-500 px-2.5 py-1 text-paper ${compact ? 'text-[10px]' : 'text-[11px]'}`}>
       <Ban size={compact ? 11 : 12} />
-      Annulation gratuite {terms.cancellationHours}h
+      {fmt(d.terms.freeCancellation, { hours: terms.cancellationHours })}
     </span>
   );
 }
 
+/** Libelles courts, partages entre la carte de resultat et la fiche. */
+export function useTermLabels(terms: RentalTerms) {
+  const d = useDict();
+  const f = useFormat();
+  return {
+    deposit: fmt(d.terms.depositShort, { amount: f.euro(terms.deposit) }),
+    excess: fmt(d.terms.excessShort, { amount: f.euro(terms.excess) }),
+    fuel: d.terms.fuelPolicy[fuelPolicyKey[terms.fuelPolicy]],
+    fuelHelp: d.terms.fuelPolicyHelp[fuelPolicyKey[terms.fuelPolicy]],
+    mileage: terms.unlimitedMileage
+      ? d.terms.unlimitedMileage
+      : fmt(d.terms.mileagePerDay, { km: terms.kmPerDay ?? 0 }),
+    cards: terms.acceptsDebitCard ? d.terms.cardsBoth : d.terms.cardsCreditOnly,
+  };
+}
+
 /** Ligne compacte pour une carte de resultat. */
 export function TermsRow({ terms }: { terms: RentalTerms }) {
+  const l = useTermLabels(terms);
   const items = [
-    { icon: Lock, label: `Caution ${euro(terms.deposit)}` },
-    { icon: ShieldAlert, label: `Franchise ${euro(terms.excess)}` },
-    { icon: Fuel, label: fuelPolicyLabels[terms.fuelPolicy] },
-    { icon: Gauge, label: mileageLabel(terms) },
-    { icon: CreditCard, label: cardsLabel(terms) },
+    { icon: Lock, label: l.deposit },
+    { icon: ShieldAlert, label: l.excess },
+    { icon: Fuel, label: l.fuel },
+    { icon: Gauge, label: l.mileage },
+    { icon: CreditCard, label: l.cards },
   ];
   return (
     <ul className="grid grid-cols-1 gap-y-1.5 text-[12px] text-ink-2 sm:grid-cols-2 sm:gap-x-3">
@@ -72,48 +92,32 @@ export function TermsRow({ terms }: { terms: RentalTerms }) {
 
 /** Bloc detaille pour la fiche vehicule. */
 export function TermsTable({ terms }: { terms: RentalTerms }) {
+  const d = useDict();
+  const f = useFormat();
+  const l = useTermLabels(terms);
+  const t = d.terms.table;
+
   const rows = [
-    {
-      icon: Lock,
-      label: 'Caution',
-      value: euro(terms.deposit),
-      help: 'Montant bloque sur votre carte au comptoir puis libere au retour du vehicule.',
-    },
-    {
-      icon: ShieldAlert,
-      label: 'Franchise',
-      value: euro(terms.excess),
-      help: 'Somme qui reste a votre charge en cas de dommage. Reductible avec une assurance complementaire.',
-    },
+    { icon: Lock, label: t.deposit, value: f.euro(terms.deposit), help: t.depositHelp },
+    { icon: ShieldAlert, label: t.excess, value: f.euro(terms.excess), help: t.excessHelp },
     {
       icon: Ban,
-      label: 'Annulation',
-      value: terms.freeCancellation ? `Gratuite jusqu a ${terms.cancellationHours}h avant` : 'Non remboursable',
-      help: terms.freeCancellation
-        ? 'Annulez sans frais dans ce delai, remboursement integral.'
-        : 'Ce tarif ne permet pas l annulation gratuite.',
+      label: t.cancellation,
+      value: terms.freeCancellation ? fmt(t.cancellationFree, { hours: terms.cancellationHours }) : t.cancellationNone,
+      help: terms.freeCancellation ? t.cancellationFreeHelp : t.cancellationNoneHelp,
     },
     {
       icon: CreditCard,
-      label: 'Moyen de paiement au comptoir',
-      value: cardsLabel(terms),
-      help: terms.acceptsDebitCard
-        ? 'Ce loueur accepte la carte de debit pour la caution, au nom du conducteur principal.'
-        : 'La caution doit etre bloquee sur une carte de credit au nom du conducteur principal. Une carte de debit sera refusee.',
+      label: t.payment,
+      value: l.cards,
+      help: terms.acceptsDebitCard ? t.paymentBothHelp : t.paymentCreditHelp,
     },
-    {
-      icon: Fuel,
-      label: 'Politique carburant',
-      value: fuelPolicyLabels[terms.fuelPolicy],
-      help: fuelPolicyHelp[terms.fuelPolicy],
-    },
+    { icon: Fuel, label: t.fuel, value: l.fuel, help: l.fuelHelp },
     {
       icon: Gauge,
-      label: 'Kilometrage',
-      value: mileageLabel(terms),
-      help: terms.unlimitedMileage
-        ? 'Roulez autant que vous voulez, aucun surcout au kilometre.'
-        : 'Au dela du forfait, chaque kilometre supplementaire est facture par le loueur.',
+      label: t.mileage,
+      value: l.mileage,
+      help: terms.unlimitedMileage ? t.mileageUnlimitedHelp : t.mileageLimitedHelp,
     },
   ];
 

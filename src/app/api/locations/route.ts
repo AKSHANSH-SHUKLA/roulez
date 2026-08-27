@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { searchLocations, FR_LOCATIONS, locationSubtitle } from '@/lib/locations';
+import { searchLocations, FR_LOCATIONS } from '@/lib/locations';
 import type { Location } from '@/lib/types';
 
 /** Le front attend un `Location`; on ajoute region/departement en plus. */
@@ -9,7 +9,8 @@ function toLocation(l: (typeof FR_LOCATIONS)[number]): Location {
     name: l.name,
     city: l.city,
     type: l.type,
-    address: locationSubtitle(l),
+    // Le libelle secondaire est compose cote client : il depend de la langue.
+    address: l.region,
     region: l.region,
     department: l.department,
   };

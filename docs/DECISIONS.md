@@ -205,3 +205,30 @@ du droit consulte le 27 aout 2026 (Cerfa 15776*02, declaration ANTS sous 15
 jours sous peine de 135 EUR, controle technique de moins de 6 mois au-dela de 4
 ans, certificat de situation de moins de 15 jours). Elles doivent etre revues
 par un juriste avant toute mise en ligne commerciale.
+
+---
+
+## ADR-011 — Bilingue FR/EN par dictionnaire, pas par traduction automatique
+
+**Date** : 2026-08-27 · **Statut** : accepte
+
+**Contexte.** Le site est en francais. La traduction automatique de Chrome
+cassait l'hydratation React (elle reecrit les noeuds de texte sous les pieds du
+framework), ce qui avait deja mis le site hors ligne ; d'ou le `translate="no"`
+pose dans `layout.tsx`. Consequence : plus personne ne pouvait lire le site dans
+une autre langue, y compris son auteur.
+
+**Decision.** Un vrai systeme bilingue interne. Deux dictionnaires typables,
+`en.ts` declare `: Dict` pour que TypeScript refuse une cle manquante, un
+selecteur FR/EN dans la barre de navigation, le choix conserve dans
+`localStorage`, et la langue du navigateur comme valeur par defaut.
+
+**Consequence.** `translate="no"` reste en place et n'est plus un probleme. Le
+cout est reel : toute nouvelle chaine doit etre ajoutee dans deux fichiers, et
+les modules de `lib/` ne peuvent plus contenir de phrases — ils renvoient des
+codes. En echange, l'anglais devient un vrai marche : une part importante des
+locations de vacances en France est reservee par des visiteurs etrangers.
+
+**Non retenu.** Router par URL (`/fr/...`, `/en/...`) avec `next-intl`. C'est la
+bonne cible, mais elle suppose d'abord la migration vers de vraies URL
+(ADR-001) ; faire les deux en meme temps aurait double le risque.

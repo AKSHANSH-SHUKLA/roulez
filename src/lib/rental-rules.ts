@@ -9,8 +9,6 @@
 export const MIN_RENTAL_DAYS = 1; // 24 heures
 export const MAX_RENTAL_DAYS = 182; // 6 mois
 
-export const DURATION_HINT = '24 heures minimum, 6 mois maximum';
-
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 /** Nombre de jours entiers entre deux dates ISO (yyyy-mm-dd). */
@@ -22,35 +20,23 @@ export function rentalDays(pickup: string, ret: string): number {
   return Math.round((b.getTime() - a.getTime()) / MS_PER_DAY);
 }
 
+/** Code d'erreur, pas un message : la traduction vit dans src/lib/i18n. */
+export type DurationError = 'missingDates' | 'tooShort' | 'tooLong';
+
 export interface DurationCheck {
   ok: boolean;
   days: number;
-  error: string | null;
+  error: DurationError | null;
 }
 
 export function checkRentalDuration(pickup: string, ret: string): DurationCheck {
-  if (!pickup || !ret) {
-    return { ok: false, days: 0, error: 'Choisissez une date de depart et une date de retour.' };
-  }
+  if (!pickup || !ret) return { ok: false, days: 0, error: 'missingDates' };
   const days = rentalDays(pickup, ret);
-  if (days < MIN_RENTAL_DAYS) {
-    return { ok: false, days, error: 'La duree minimum est de 24 heures.' };
-  }
-  if (days > MAX_RENTAL_DAYS) {
-    return { ok: false, days, error: 'La duree maximum est de 6 mois (182 jours).' };
-  }
+  if (days < MIN_RENTAL_DAYS) return { ok: false, days, error: 'tooShort' };
+  if (days > MAX_RENTAL_DAYS) return { ok: false, days, error: 'tooLong' };
   return { ok: true, days, error: null };
 }
 
-/** "3 jours", "1 mois et 4 jours" — pour l'affichage du recapitulatif. */
-export function formatDuration(days: number): string {
-  if (days <= 0) return '';
-  if (days < 31) return `${days} jour${days > 1 ? 's' : ''}`;
-  const months = Math.floor(days / 30);
-  const rest = days % 30;
-  const m = `${months} mois`;
-  return rest > 0 ? `${m} et ${rest} jour${rest > 1 ? 's' : ''}` : m;
-}
 
 /** Date ISO du jour + n. Utilise pour les valeurs par defaut et les bornes des inputs. */
 export function isoDatePlus(n: number): string {

@@ -52,10 +52,18 @@ export function controleTechniqueValid(ctDate: string): boolean {
   return months >= 0 && months <= CT_MAX_AGE_MONTHS;
 }
 
+export type DocKey = 'carteGrise' | 'controleTechnique' | 'certificatSituation' | 'certificatCession' | 'carnetEntretien';
+
+/**
+ * Une regle documentaire : la cle de dictionnaire, les parametres a injecter,
+ * et si elle est obligatoire POUR CE VEHICULE. Aucun texte ici — la traduction
+ * vit dans src/lib/i18n.
+ */
 export interface DocRule {
-  key: 'carteGrise' | 'controleTechnique' | 'certificatSituation' | 'certificatCession' | 'carnetEntretien';
-  label: string;
-  help: string;
+  key: DocKey;
+  /** cle du texte d'aide dans d.docs[key] */
+  helpKey: 'help' | 'helpRequired' | 'helpOptional';
+  params: Record<string, string | number>;
   mandatory: boolean;
 }
 
@@ -63,50 +71,24 @@ export interface DocRule {
 export function documentRules(firstRegistration: string): DocRule[] {
   const ctNeeded = requiresControleTechnique(firstRegistration);
   return [
-    {
-      key: 'carteGrise',
-      label: "Certificat d'immatriculation (carte grise)",
-      help: "A votre nom. Le jour de la vente vous la barrez, vous inscrivez « Vendu le » avec la date et l'heure, et vous signez.",
-      mandatory: true,
-    },
+    { key: 'carteGrise', helpKey: 'help', params: {}, mandatory: true },
     {
       key: 'controleTechnique',
-      label: 'Proces-verbal de controle technique',
-      help: ctNeeded
-        ? `Obligatoire : votre vehicule a plus de ${CT_EXEMPT_UNDER_YEARS} ans. Le PV doit dater de moins de ${CT_MAX_AGE_MONTHS} mois le jour de la vente (2 mois si contre-visite).`
-        : `Non obligatoire : votre vehicule a moins de ${CT_EXEMPT_UNDER_YEARS} ans. Vous pouvez tout de meme en fournir un.`,
+      helpKey: ctNeeded ? 'helpRequired' : 'helpOptional',
+      params: { years: CT_EXEMPT_UNDER_YEARS, months: CT_MAX_AGE_MONTHS },
       mandatory: ctNeeded,
     },
-    {
-      key: 'certificatSituation',
-      label: 'Certificat de situation administrative (non-gage)',
-      help: `Gratuit sur HistoVec ou l'ANTS. Il prouve que le vehicule n'est ni gage ni opposition. Il doit dater de moins de ${CSA_MAX_AGE_DAYS} jours le jour de la vente.`,
-      mandatory: true,
-    },
+    { key: 'certificatSituation', helpKey: 'help', params: { days: CSA_MAX_AGE_DAYS }, mandatory: true },
     {
       key: 'certificatCession',
-      label: `Certificat de cession (Cerfa ${CERFA_CESSION})`,
-      help: `Deux exemplaires, signes par vous et par l'acheteur. Vous declarez ensuite la vente en ligne sous ${ANTS_DECLARATION_DAYS} jours, sinon ${ANTS_FINE_EUR} EUR d'amende, puis vous remettez le code de cession a l'acheteur.`,
+      helpKey: 'help',
+      params: { cerfa: CERFA_CESSION, days: ANTS_DECLARATION_DAYS, fine: `${ANTS_FINE_EUR} EUR` },
       mandatory: true,
     },
-    {
-      key: 'carnetEntretien',
-      label: 'Carnet d entretien et factures',
-      help: "Facultatif, mais c'est ce qui fait la difference a la negociation : un historique complet rassure l'acheteur.",
-      mandatory: false,
-    },
+    { key: 'carnetEntretien', helpKey: 'help', params: {}, mandatory: false },
   ];
 }
 
-export const CRIT_AIR_LABELS: Record<string, string> = {
-  '0': "Crit'Air 0 — 100 % electrique ou hydrogene",
-  '1': "Crit'Air 1 — essence Euro 5/6, hybride rechargeable",
-  '2': "Crit'Air 2 — essence Euro 4, diesel Euro 5/6",
-  '3': "Crit'Air 3 — essence Euro 2/3, diesel Euro 4",
-  '4': "Crit'Air 4 — diesel Euro 3",
-  '5': "Crit'Air 5 — diesel Euro 2",
-  'non-classe': 'Non classe — circulation interdite dans plusieurs ZFE',
-};
 
 export interface ListingDraft {
   title: string;
@@ -124,29 +106,35 @@ export interface ListingDraft {
   controleTechniqueDate: string;
 }
 
-/** Valide un brouillon d'annonce. Renvoie un message par champ fautif. */
-export function validateListing(d: ListingDraft): Record<string, string> {
-  const e: Record<string, string> = {};
+/** Code d'erreur par champ. Le message correspondant vit dans src/lib/i18n. */
+export interface ListingError {
+  code: string;
+  params?: Record<string, string | number>;
+}
 
-  if (!d.title.trim()) e.title = "Donnez un titre a votre annonce.";
-  if (!d.brand.trim()) e.brand = 'La marque est obligatoire.';
-  if (!d.model.trim()) e.model = 'Le modele est obligatoire.';
-  if (!d.firstRegistration) e.firstRegistration = 'La date de premiere mise en circulation est obligatoire.';
-  if (!d.mileage || Number(d.mileage) <= 0) e.mileage = 'Indiquez le kilometrage reel du compteur.';
-  if (!d.price || Number(d.price) <= 0) e.price = 'Indiquez un prix de vente.';
-  if (!d.city.trim()) e.city = 'Indiquez la ville ou se trouve le vehicule.';
-  if (!d.sellerName.trim()) e.sellerName = 'Votre nom est obligatoire.';
-  if (!d.phone.trim() && !d.email.trim()) e.phone = 'Laissez au moins un moyen de contact, telephone ou email.';
-  if (d.photos.length < 3) e.photos = 'Ajoutez au moins 3 photos : exterieur, interieur et compteur.';
+/** Valide un brouillon d'annonce. Renvoie un code par champ fautif. */
+export function validateListing(d: ListingDraft): Record<string, ListingError> {
+  const e: Record<string, ListingError> = {};
+
+  if (!d.title.trim()) e.title = { code: 'title' };
+  if (!d.brand.trim()) e.brand = { code: 'brand' };
+  if (!d.model.trim()) e.model = { code: 'model' };
+  if (!d.firstRegistration) e.firstRegistration = { code: 'firstRegistration' };
+  if (!d.mileage || Number(d.mileage) <= 0) e.mileage = { code: 'mileage' };
+  if (!d.price || Number(d.price) <= 0) e.price = { code: 'price' };
+  if (!d.city.trim()) e.city = { code: 'city' };
+  if (!d.sellerName.trim()) e.sellerName = { code: 'sellerName' };
+  if (!d.phone.trim() && !d.email.trim()) e.phone = { code: 'contact' };
+  if (d.photos.length < 3) e.photos = { code: 'photos' };
 
   for (const rule of documentRules(d.firstRegistration)) {
     if (rule.mandatory && !d.documents[rule.key]) {
-      e[`doc_${rule.key}`] = `${rule.label} : obligatoire pour conclure la vente.`;
+      e[`doc_${rule.key}`] = { code: 'docRequired', params: { doc: rule.key } };
     }
   }
 
   if (d.documents.controleTechnique && d.controleTechniqueDate && !controleTechniqueValid(d.controleTechniqueDate)) {
-    e.controleTechniqueDate = `Ce controle technique a plus de ${CT_MAX_AGE_MONTHS} mois : il faudra le refaire avant la vente.`;
+    e.controleTechniqueDate = { code: 'ctTooOld', params: { months: CT_MAX_AGE_MONTHS } };
   }
 
   return e;

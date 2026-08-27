@@ -8,33 +8,13 @@ import {
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Tilt, useCalm } from '@/components/motion/tilt';
 import { useAppStore, useBookingStore } from '@/lib/store';
-import { checkRentalDuration, DURATION_HINT, formatDuration, isoDatePlus } from '@/lib/rental-rules';
+import { checkRentalDuration, isoDatePlus } from '@/lib/rental-rules';
+import { useDict, useFormat, fmt } from '@/lib/i18n';
 import type { Location, RentalCar } from '@/lib/types';
 
 const popularCities = ['Paris', 'Nice', 'Lyon', 'Bordeaux', 'Marseille', 'Toulouse'];
 
 type Mode = 'louer' | 'acheter' | 'vendre';
-
-const modes: { id: Mode; label: string }[] = [
-  { id: 'louer', label: 'Louer' },
-  { id: 'acheter', label: 'Acheter' },
-  { id: 'vendre', label: 'Vendre' },
-];
-
-const headlines: Record<Mode, { title: string; sub: string }> = {
-  louer: {
-    title: 'Toute la France en voiture',
-    sub: 'Comparez les prix de plus de 10 loueurs. Total, caution et franchise affiches avant de reserver.',
-  },
-  acheter: {
-    title: 'Votre prochaine voiture, sans surprise',
-    sub: 'Des annonces de particuliers et de professionnels partout en France, avec le kilometrage et l historique.',
-  },
-  vendre: {
-    title: 'Vendez votre voiture au bon prix',
-    sub: 'Publiez votre annonce en quelques minutes et touchez des acheteurs dans toute la France.',
-  },
-};
 
 export default function HeroSearch() {
   const [mode, setMode] = useState<Mode>('louer');
@@ -55,7 +35,20 @@ export default function HeroSearch() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const d = useDict();
+  const f = useFormat();
   const { setPage, setSaleFilters, setBuySellTab } = useAppStore();
+
+  const modes: { id: Mode; label: string }[] = [
+    { id: 'louer', label: d.hero.modes.rent },
+    { id: 'acheter', label: d.hero.modes.buy },
+    { id: 'vendre', label: d.hero.modes.sell },
+  ];
+  const headlines: Record<Mode, { title: string; sub: string }> = {
+    louer: d.hero.rent,
+    acheter: d.hero.buy,
+    vendre: d.hero.sell,
+  };
   const { setFilters, setSearchResults } = useBookingStore();
 
   // Close dropdown on outside click
@@ -110,7 +103,7 @@ export default function HeroSearch() {
     // Regle de duree : source unique dans src/lib/rental-rules.ts
     const check = checkRentalDuration(pickupDate, returnDate);
     if (!check.ok) {
-      setDateError(check.error);
+      setDateError(check.error ? d.rules[check.error] : null);
       return;
     }
     setDateError(null);
@@ -147,7 +140,7 @@ export default function HeroSearch() {
   const handleSearch = () => {
     const locId = selectedLocation || locationQuery.trim();
     if (!locId) {
-      setDateError('Indiquez un lieu de prise en charge.');
+      setDateError(d.hero.noLocation);
       return;
     }
     runSearch(locId);
@@ -247,7 +240,7 @@ export default function HeroSearch() {
                   {/* lieu */}
                   <div className="relative sm:col-span-2" ref={dropdownRef}>
                     <label htmlFor="lieu" className="label-tight mb-2 block text-[11px] text-ink-2">
-                      Lieu de prise en charge
+                      {d.hero.pickupLabel}
                     </label>
                     <div className="relative">
                       <MapPin size={17} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-petrol-500" />
@@ -262,7 +255,7 @@ export default function HeroSearch() {
                         role="combobox"
                         aria-expanded={showDropdown}
                         aria-controls="lieu-suggestions"
-                        placeholder="Ville, aéroport, gare ou département"
+                        placeholder={d.hero.pickupPlaceholder}
                         className={field + ' pl-10'}
                       />
                     </div>
@@ -288,7 +281,9 @@ export default function HeroSearch() {
                               <Icon size={16} className="shrink-0 text-petrol-500" />
                               <span className="min-w-0 flex-1">
                                 <span className="block truncate text-[15px] font-semibold text-ink">{loc.name}</span>
-                                <span className="block truncate text-[13px] text-ink-2">{loc.address}</span>
+                                <span className="block truncate text-[13px] text-ink-2">
+                                  {loc.type === 'region' ? d.locationTypes.region : `${d.locationTypes[loc.type]} · ${loc.address}`}
+                                </span>
                               </span>
                             </button>
                           );
@@ -299,7 +294,7 @@ export default function HeroSearch() {
 
                   {/* dates */}
                   <div>
-                    <label htmlFor="debut" className="label-tight mb-2 block text-[11px] text-ink-2">Date de début</label>
+                    <label htmlFor="debut" className="label-tight mb-2 block text-[11px] text-ink-2">{d.hero.startLabel}</label>
                     <div className="relative">
                       <Calendar size={17} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-petrol-500" />
                       <input
@@ -313,7 +308,7 @@ export default function HeroSearch() {
                     </div>
                   </div>
                   <div>
-                    <label htmlFor="retour" className="label-tight mb-2 block text-[11px] text-ink-2">Date de retour</label>
+                    <label htmlFor="retour" className="label-tight mb-2 block text-[11px] text-ink-2">{d.hero.returnLabel}</label>
                     <div className="relative">
                       <Calendar size={17} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-petrol-500" />
                       <input
@@ -332,11 +327,11 @@ export default function HeroSearch() {
                 <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px]">
                   <span className="flex items-center gap-1.5 text-ink-2">
                     <Clock3 size={14} className="text-petrol-500" />
-                    {DURATION_HINT}
+                    {d.rules.durationHint}
                   </span>
                   {duration.ok && (
                     <span className="nums font-semibold text-petrol-600">
-                      Duree choisie : {formatDuration(duration.days)}
+                      {fmt(d.hero.durationChosen, { duration: f.duration(duration.days) })}
                     </span>
                   )}
                 </div>
@@ -354,11 +349,11 @@ export default function HeroSearch() {
                   className="pressable mt-5 flex w-full items-center justify-center gap-2.5 rounded-[12px] bg-petrol-600 px-6 py-4 text-base font-bold text-paper hover:bg-petrol-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <Search size={19} />
-                  {loading ? 'Recherche en cours' : 'Rechercher'}
+                  {loading ? d.hero.searching : d.hero.search}
                 </button>
 
                 <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-petrol-50 pt-4">
-                  <span className="label-tight mr-1 text-[11px] text-ink-2">Départs populaires</span>
+                  <span className="label-tight mr-1 text-[11px] text-ink-2">{d.hero.popularDepartures}</span>
                   {popularCities.map((city) => (
                     <button
                       key={city}
@@ -369,7 +364,7 @@ export default function HeroSearch() {
                     </button>
                   ))}
                   <span className="w-full text-[12px] text-ink-2">
-                    Toute la France : 101 départements, 250 villes, 53 aéroports et 60 gares.
+                    {d.hero.coverage}
                   </span>
                 </div>
               </>
@@ -378,7 +373,7 @@ export default function HeroSearch() {
             {mode === 'acheter' && (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="sm:col-span-2">
-                  <label htmlFor="modele" className="label-tight mb-2 block text-[11px] text-ink-2">Marque ou modele</label>
+                  <label htmlFor="modele" className="label-tight mb-2 block text-[11px] text-ink-2">{d.hero.buyForm.modelLabel}</label>
                   <div className="relative">
                     <Car size={17} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-petrol-500" />
                     <input
@@ -386,19 +381,18 @@ export default function HeroSearch() {
                       type="text"
                       value={buyQuery}
                       onChange={(e) => setBuyQuery(e.target.value)}
-                      placeholder="Peugeot 208, Renault Clio, Tesla"
+                      placeholder={d.hero.buyForm.modelPlaceholder}
                       className={field + ' pl-10'}
                     />
                   </div>
                 </div>
                 <div className="sm:col-span-2">
-                  <label htmlFor="budget" className="label-tight mb-2 block text-[11px] text-ink-2">Budget maximum</label>
+                  <label htmlFor="budget" className="label-tight mb-2 block text-[11px] text-ink-2">{d.hero.buyForm.budgetLabel}</label>
                   <select id="budget" value={buyBudget} onChange={(e) => setBuyBudget(e.target.value)} className={field}>
-                    <option value="">Tous les budgets</option>
-                    <option value="10000">Jusqu a 10 000 EUR</option>
-                    <option value="20000">Jusqu a 20 000 EUR</option>
-                    <option value="30000">Jusqu a 30 000 EUR</option>
-                    <option value="50000">Jusqu a 50 000 EUR</option>
+                    <option value="">{d.hero.buyForm.anyBudget}</option>
+                    {[10000, 20000, 30000, 50000].map((v) => (
+                      <option key={v} value={v}>{fmt(d.hero.buyForm.upTo, { amount: f.euro(v) })}</option>
+                    ))}
                   </select>
                 </div>
                 <button
@@ -413,19 +407,16 @@ export default function HeroSearch() {
                   className="pressable sm:col-span-2 flex w-full items-center justify-center gap-2.5 rounded-[12px] bg-petrol-600 px-6 py-4 text-base font-bold text-paper hover:bg-petrol-700"
                 >
                   <Search size={19} />
-                  Voir les annonces
+                  {d.hero.buyForm.cta}
                 </button>
               </div>
             )}
 
             {mode === 'vendre' && (
               <div className="space-y-4">
-                <p className="text-[15px] leading-relaxed text-ink-2">
-                  Publiez votre annonce gratuitement : photos, kilometrage, prix. Les acheteurs vous
-                  contactent directement, sans commission sur la vente.
-                </p>
+                <p className="text-[15px] leading-relaxed text-ink-2">{d.hero.sellForm.pitch}</p>
                 <ul className="grid grid-cols-1 gap-2 text-[14px] text-ink-2 sm:grid-cols-3">
-                  {['Annonce gratuite', 'Zero commission', 'Visible dans toute la France'].map((t) => (
+                  {[d.hero.sellForm.free, d.hero.sellForm.noCommission, d.hero.sellForm.nationwide].map((t) => (
                     <li key={t} className="flex items-center gap-2">
                       <Tag size={14} className="text-petrol-500" />{t}
                     </li>
@@ -436,16 +427,16 @@ export default function HeroSearch() {
                   className="pressable flex w-full items-center justify-center gap-2.5 rounded-[12px] bg-saffron-500 px-6 py-4 text-base font-bold text-ink hover:bg-saffron-700 hover:text-paper"
                 >
                   <Tag size={19} />
-                  Deposer mon annonce
+                  {d.hero.sellForm.cta}
                 </button>
               </div>
             )}
           </motion.div>
 
           <ul className="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-[15px] text-petrol-100">
-            <li className="flex items-center gap-2"><ShieldCheck size={17} className="text-saffron-300" />Assurance en option</li>
-            <li className="flex items-center gap-2"><Ban size={17} className="text-saffron-300" />Annulation gratuite</li>
-            <li className="flex items-center gap-2"><Clock3 size={17} className="text-saffron-300" />Assistance 24/7</li>
+            <li className="flex items-center gap-2"><ShieldCheck size={17} className="text-saffron-300" />{d.hero.trust.insurance}</li>
+            <li className="flex items-center gap-2"><Ban size={17} className="text-saffron-300" />{d.hero.trust.cancellation}</li>
+            <li className="flex items-center gap-2"><Clock3 size={17} className="text-saffron-300" />{d.hero.trust.support}</li>
           </ul>
         </motion.div>
 
@@ -460,13 +451,13 @@ export default function HeroSearch() {
             <Tilt max={11} scale={1.015} className="[transform-style:preserve-3d]">
               <div className="relative h-[30rem] w-full">
                 <div className="absolute right-6 top-0 h-64 w-[19rem] overflow-hidden rounded-[20px] shadow-[0_30px_60px_-24px_rgba(7,47,39,0.8)] [transform:translateZ(70px)]">
-                  <img src="/destinations/nice.jpg" alt="La baie des Anges à Nice" className="h-full w-full object-cover" />
+                  <img src="/destinations/nice.jpg" alt={d.hero.photoAlt.nice} className="h-full w-full object-cover" />
                 </div>
                 <div className="absolute left-0 top-40 h-60 w-[17rem] overflow-hidden rounded-[20px] shadow-[0_30px_60px_-24px_rgba(7,47,39,0.85)] [transform:translateZ(120px)]">
-                  <img src="/destinations/paris.jpg" alt="Paris depuis le 7e arrondissement" className="h-full w-full object-cover" />
+                  <img src="/destinations/paris.jpg" alt={d.hero.photoAlt.paris} className="h-full w-full object-cover" />
                 </div>
                 <div className="absolute bottom-0 right-2 h-52 w-[15rem] overflow-hidden rounded-[20px] shadow-[0_24px_50px_-20px_rgba(7,47,39,0.8)] [transform:translateZ(30px)]">
-                  <img src="/destinations/marseille.jpg" alt="Le Vieux-Port de Marseille" className="h-full w-full object-cover" />
+                  <img src="/destinations/marseille.jpg" alt={d.hero.photoAlt.marseille} className="h-full w-full object-cover" />
                 </div>
               </div>
             </Tilt>

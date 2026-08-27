@@ -1,6 +1,7 @@
 'use client';
 
 import { useAppStore, useAuthStore } from '@/lib/store';
+import { LocaleBoot } from '@/lib/i18n';
 import Navbar from '@/components/sections/navbar';
 import HeroSearch from '@/components/sections/hero-search';
 import PopularDestinations from '@/components/sections/popular-destinations';
@@ -102,6 +103,9 @@ export default function Page() {
 
   return (
     <div key={currentPage}>
+      {/* restaure la langue choisie apres l'hydratation */}
+      <LocaleBoot />
+
       {renderPage()}
 
       {/* Auth modal */}

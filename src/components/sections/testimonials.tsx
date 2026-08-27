@@ -1,35 +1,18 @@
 'use client';
 
 import { Reveal } from '@/components/motion/tilt';
+import { useDict } from '@/lib/i18n';
 
-const testimonials = [
-  {
-    name: 'Marie L.',
-    location: 'Paris',
-    quote:
-      "Service excellent ! J'ai trouve une voiture a un prix tres competitif a Paris. La reservation etait simple et rapide.",
-    tilt: '-2.2deg',
-    card: 'bg-saffron-300',
-  },
-  {
-    name: 'Pierre D.',
-    location: 'Lyon',
-    quote:
-      "J'utilise Roulez a chaque voyage en France. La comparaison des prix m'a fait economiser sur toutes mes locations.",
-    tilt: '1.6deg',
-    card: 'bg-azure-300',
-  },
-  {
-    name: 'Sophie M.',
-    location: 'Nice',
-    quote:
-      "Interface tres intuitive. J'ai pu reserver en quelques minutes et le vehicule etait exactement comme decrit.",
-    tilt: '-1.1deg',
-    card: 'bg-terra-300',
-  },
+const style = [
+  { tilt: '-2.2deg', card: 'bg-saffron-300' },
+  { tilt: '1.6deg', card: 'bg-azure-300' },
+  { tilt: '-1.1deg', card: 'bg-terra-300' },
 ];
 
 export default function Testimonials() {
+  const d = useDict();
+  const testimonials = d.testimonials.items.map((t, i) => ({ ...t, ...style[i] }));
+
   return (
     <section className="relative overflow-hidden bg-paper py-24 md:py-32">
       <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -40,7 +23,7 @@ export default function Testimonials() {
       <div className="relative mx-auto max-w-[1400px] px-6 md:px-10">
         <Reveal>
           <h2 className="font-poster max-w-[14ch] text-[clamp(2rem,4.6vw,3.6rem)] text-ink">
-            Ce que disent nos clients
+            {d.testimonials.title}
           </h2>
         </Reveal>
 
@@ -51,7 +34,7 @@ export default function Testimonials() {
                 className={`h-full rounded-[20px] ${t.card} p-7 shadow-[0_26px_50px_-26px_rgba(20,35,28,0.55)] transition-transform duration-300 hover:!rotate-0`}
                 style={{ transform: `rotate(${t.tilt})` }}
               >
-                <div className="mb-5 flex gap-1" aria-label="5 etoiles sur 5">
+                <div className="mb-5 flex gap-1" aria-label={d.testimonials.starsLabel}>
                   {Array.from({ length: 5 }).map((_, s) => (
                     <span key={s} className="text-ink/70" aria-hidden>&#9733;</span>
                   ))}

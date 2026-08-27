@@ -8,6 +8,7 @@ const destinations: Destination[] = [
     imageUrl: '/destinations/paris.jpg',
     carCount: 22,
     startingPrice: 29,
+    descriptionEn: 'The city of light, with its landmark monuments and charming side streets.',
     description: "La ville lumi\u00e8re vous attend avec ses monuments iconiques, ses mus\u00e9es mondialement connus et sa gastronomie incomparable. Explorez Paris \u00e0 votre rythme en voiture pour d\u00e9couvrir ses quartiers charmants et ses villages secrets.",
   },
   {
@@ -16,6 +17,7 @@ const destinations: Destination[] = [
     imageUrl: '/destinations/nice.jpg',
     carCount: 15,
     startingPrice: 32,
+    descriptionEn: 'The jewel of the Cote d’Azur, between the sea and the mountains.',
     description: "Perle de la C\u00f4te d'Azur, Nice enchante par sa promenade des Anglais, son vieux quartier color\u00e9 et ses plages de M\u00e9diterran\u00e9e. Un point de d\u00e9part id\u00e9al pour explorer les villages de l'arri\u00e8re-pays ni\u00e7ois.",
   },
   {
@@ -24,6 +26,7 @@ const destinations: Destination[] = [
     imageUrl: '/destinations/lyon.jpg',
     carCount: 18,
     startingPrice: 27,
+    descriptionEn: 'The capital of French gastronomy, at the heart of the Rhone-Alpes region.',
     description: "Capitale mondiale de la gastronomie, Lyon vous s\u00e9duira par son patrimoine historique remarquable class\u00e9 \u00e0 l'UNESCO. D\u00e9couvrez ses bouchons, ses traboules et sa presqu'\u00eele entre Rh\u00f4ne et Sa\u00f4ne.",
   },
   {
@@ -32,6 +35,7 @@ const destinations: Destination[] = [
     imageUrl: '/destinations/marseille.jpg',
     carCount: 14,
     startingPrice: 25,
+    descriptionEn: 'The Phocaean city, with its old port and breathtaking calanques.',
     description: "Plus ancienne ville de France, Marseille fascine par son Vieux-Port anim\u00e9, le majestueux quartier du Panier et les calanques \u00e0 couper le souffle. Une ville vibrante, authentique et gourmande.",
   },
   {
@@ -40,6 +44,7 @@ const destinations: Destination[] = [
     imageUrl: '/destinations/bordeaux.jpg',
     carCount: 16,
     startingPrice: 30,
+    descriptionEn: 'The gateway to the famous Bordeaux vineyards.',
     description: "Capitale mondiale du vin, Bordeaux brille par son architecture du XVIIIe si\u00e8cle parfaitement pr\u00e9serv\u00e9e. Explorez les ch\u00e2teaux du M\u00e9doc et la r\u00e9gion des vignobles qui font la renomm\u00e9e de la ville.",
   },
   {
@@ -48,6 +53,7 @@ const destinations: Destination[] = [
     imageUrl: '/destinations/strasbourg.jpg',
     carCount: 12,
     startingPrice: 28,
+    descriptionEn: 'European capital, home to the Petite France quarter.',
     description: "Carrefour de l'Europe, Strasbourg \u00e9blouit avec sa cath\u00e9drale gothique, son quartier de la Petite France et ses march\u00e9s de No\u00ebl l\u00e9gendaires. Une ville o\u00f9 culture alsacienne et influence europ\u00e9enne se m\u00ealent harmonieusement.",
   },
   {
@@ -56,6 +62,7 @@ const destinations: Destination[] = [
     imageUrl: '/destinations/toulouse.jpg',
     carCount: 14,
     startingPrice: 26,
+    descriptionEn: 'The pink city, European capital of aeronautics.',
     description: "La ville rose, capitale de l'a\u00e9ronautique, vous accueille avec ses briques typiques et son ambiance ensoleill\u00e9e. Profitez de la gastronomie du Sud-Ouest et explorez le canal du Midi.",
   },
   {
@@ -64,6 +71,7 @@ const destinations: Destination[] = [
     imageUrl: '/destinations/nantes.jpg',
     carCount: 10,
     startingPrice: 25,
+    descriptionEn: 'A city of art and history on the banks of the Loire.',
     description: "Ville d'art et d'histoire, Nantes surprend par ses machines g\u00e9antes, son ch\u00e2teau des ducs de Bretagne et son Estuaire riche en \u0153uvres d'art contemporain. Une destination inventive et fertile.",
   },
   {
@@ -72,6 +80,7 @@ const destinations: Destination[] = [
     imageUrl: '/destinations/lille.jpg',
     carCount: 8,
     startingPrice: 25,
+    descriptionEn: 'A lively northern metropolis, part Flemish and part French chic.',
     description: "Capitale des Flandres fran\u00e7aises, Lille charme par sa Grand Place, son beffroi et ses ruelles pav\u00e9es pleines de boutiques. La ville offre aussi un acc\u00e8s facile aux march\u00e9s de No\u00ebl belges et aux brasseries traditionnelles.",
   },
   {

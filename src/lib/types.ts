@@ -126,6 +126,7 @@ export interface Destination {
   carCount: number;
   startingPrice: number;
   description: string;
+  descriptionEn?: string;
 }
 
 export interface InsurancePlan {
@@ -134,6 +135,10 @@ export interface InsurancePlan {
   description: string;
   dailyPrice: number;
   coverage: string[];
+  /** Variantes anglaises, servies par l'API */
+  nameEn?: string;
+  descriptionEn?: string;
+  coverageEn?: string[];
 }
 
 export interface SearchFilters {

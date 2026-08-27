@@ -25,14 +25,6 @@ export interface FrLocation {
   q: string;
 }
 
-export const typeLabels: Record<FrLocationType, string> = {
-  airport: 'Aeroport',
-  train_station: 'Gare',
-  city: 'Ville',
-  department: 'Departement',
-  region: 'Region',
-};
-
 /** Enleve accents, tirets et apostrophes pour comparer ce que les gens tapent vraiment. */
 export function normalize(s: string): string {
   return s
@@ -4940,9 +4932,3 @@ export function findLocation(idOrName: string): FrLocation | null {
   );
 }
 
-/** Libelle secondaire affiche sous le nom dans la liste de suggestions. */
-export function locationSubtitle(loc: FrLocation): string {
-  if (loc.type === 'region') return 'Region';
-  if (loc.type === 'department') return loc.region;
-  return `${typeLabels[loc.type]} · ${loc.region}`;
-}

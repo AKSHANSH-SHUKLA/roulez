@@ -113,6 +113,32 @@ Les constantes legales (`CERFA_CESSION`, `CSA_MAX_AGE_DAYS`,
 texte de l'interface, pour qu'un changement de reglementation se fasse a un seul
 endroit.
 
+### `src/lib/i18n/`
+
+Le site est bilingue francais / anglais. Le francais fait foi.
+
+- `fr.ts` — le dictionnaire de reference, en objets imbriques et typables
+  (`d.carDetail.bookNow`), pas de cles textuelles a deviner ;
+- `en.ts` — declare `: Dict`, donc une cle oubliee ne compile pas ;
+- `index.ts` — le store de langue (Zustand), `useDict()`, `useFormat()` et
+  `LocaleBoot`.
+
+Le serveur rend toujours en francais : lire `localStorage` pendant le rendu
+casserait l'hydratation React. `LocaleBoot`, monte une fois dans le routeur,
+applique juste apres le montage soit le choix enregistre, soit la langue du
+navigateur. Le choix est conserve dans `localStorage` et met a jour
+`document.documentElement.lang`.
+
+`useFormat()` regroupe ce qui depend de la langue : montants
+(`1 250 EUR` / `1,250 EUR`), nombres, et durees (`6 mois et 2 jours` /
+`6 months and 2 days`).
+
+Regle de conception : **les modules metier ne contiennent aucune phrase**. Ils
+renvoient des codes (`checkRentalDuration` renvoie `'tooShort'`,
+`documentRules` renvoie une cle plus des parametres), et les composants les
+traduisent. Sans cela, chaque nouvelle regle imposerait de retrouver son texte
+dans deux langues au milieu du code metier.
+
 ### `src/lib/store.ts`
 
 Trois stores Zustand, volontairement separes :

@@ -3,8 +3,10 @@
 import { ArrowRight } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { Reveal } from '@/components/motion/tilt';
+import { useDict } from '@/lib/i18n';
 
 export default function CtaBand() {
+  const d = useDict();
   const { setPage, setBuySellTab } = useAppStore();
   return (
     <section className="relative overflow-hidden bg-terra-700 py-20 md:py-24">
@@ -16,12 +18,12 @@ export default function CtaBand() {
         <div>
           <Reveal>
             <h2 className="font-poster max-w-[18ch] text-[clamp(1.8rem,3.6vw,2.9rem)] text-paper">
-              Vous vendez votre voiture ?
+              {d.cta.title}
             </h2>
           </Reveal>
           <Reveal delay={0.07}>
             <p className="mt-4 max-w-[48ch] text-[16px] leading-relaxed text-terra-300">
-              Publiez votre annonce et touchez les acheteurs de toute la France.
+              {d.cta.sub}
             </p>
           </Reveal>
         </div>
@@ -30,7 +32,7 @@ export default function CtaBand() {
             onClick={() => { setBuySellTab('vendre'); setPage('buy-sell'); }}
             className="pressable flex items-center gap-2.5 rounded-[14px] bg-saffron-500 px-8 py-4 text-base font-bold text-ink transition-colors duration-200 hover:bg-saffron-300"
           >
-            Vendre ma voiture
+            {d.cta.button}
             <ArrowRight size={18} />
           </button>
         </Reveal>

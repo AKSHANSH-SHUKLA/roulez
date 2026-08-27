@@ -6,18 +6,8 @@ import {
   Mail, Phone, MapPin, ShieldCheck, AlertTriangle, FileCheck2, Leaf, Hash,
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
-import { documentRules, CRIT_AIR_LABELS, CERFA_CESSION } from '@/lib/sale-rules';
-
-const conditionLabels: Record<string, string> = {
-  excellent: 'Excellent etat',
-  bon: 'Bon etat',
-  correct: 'Etat correct',
-};
-
-const transmissionLabels: Record<string, string> = {
-  manual: 'Manuelle', manuelle: 'Manuelle',
-  automatic: 'Automatique', automatique: 'Automatique',
-};
+import { documentRules, CERFA_CESSION } from '@/lib/sale-rules';
+import { useDict, useFormat, fmt } from '@/lib/i18n';
 
 /** On n'affiche jamais la plaque en entier dans une annonce publique. */
 function maskPlate(plate?: string): string | null {
@@ -27,15 +17,17 @@ function maskPlate(plate?: string): string | null {
 }
 
 export default function ListingDetail() {
+  const d = useDict();
+  const f = useFormat();
   const { selectedListing, setPage } = useAppStore();
   const [active, setActive] = useState(0);
 
   if (!selectedListing) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-24 text-center">
-        <p className="text-lg text-ink-2">Aucune annonce selectionnee.</p>
+        <p className="text-lg text-ink-2">{d.listing.noneSelected}</p>
         <button onClick={() => setPage('buy-sell')} className="pressable mt-5 rounded-[10px] bg-petrol-600 px-5 py-2.5 text-sm font-bold text-paper">
-          Retour aux annonces
+          {d.listing.back}
         </button>
       </div>
     );
@@ -47,22 +39,22 @@ export default function ListingDetail() {
   const provided = l.documents;
 
   const specs = [
-    { icon: Calendar, label: 'Mise en circulation', value: l.firstRegistration ?? String(l.year) },
-    { icon: Gauge, label: 'Kilometrage', value: `${l.mileage.toLocaleString('fr-FR')} km` },
-    { icon: Fuel, label: 'Carburant', value: l.fuelType },
-    { icon: Settings2, label: 'Transmission', value: transmissionLabels[l.transmission] ?? l.transmission },
-    { icon: DoorOpen, label: 'Portes', value: l.doors ? String(l.doors) : '—' },
-    { icon: Users, label: 'Places', value: l.seats ? String(l.seats) : '—' },
-    { icon: Palette, label: 'Couleur', value: l.color || '—' },
-    { icon: Users, label: 'Proprietaires', value: l.owners ? String(l.owners) : '—' },
-    { icon: Leaf, label: 'CO2', value: l.co2 ? `${l.co2} g/km` : '—' },
-    { icon: Hash, label: 'Puissance fiscale', value: l.fiscalPower ? `${l.fiscalPower} CV` : '—' },
+    { icon: Calendar, label: d.listing.specs.firstRegistration, value: l.firstRegistration ?? String(l.year) },
+    { icon: Gauge, label: d.listing.specs.mileage, value: `${f.number(l.mileage)} km` },
+    { icon: Fuel, label: d.listing.specs.fuel, value: d.fuels[l.fuelType as keyof typeof d.fuels] ?? l.fuelType },
+    { icon: Settings2, label: d.listing.specs.transmission, value: d.transmissions[l.transmission as keyof typeof d.transmissions] ?? l.transmission },
+    { icon: DoorOpen, label: d.listing.specs.doors, value: l.doors ? String(l.doors) : '—' },
+    { icon: Users, label: d.listing.specs.seats, value: l.seats ? String(l.seats) : '—' },
+    { icon: Palette, label: d.listing.specs.color, value: l.color || '—' },
+    { icon: Users, label: d.listing.specs.owners, value: l.owners ? String(l.owners) : '—' },
+    { icon: Leaf, label: d.listing.specs.co2, value: l.co2 ? `${l.co2} g/km` : '—' },
+    { icon: Hash, label: d.listing.specs.fiscalPower, value: l.fiscalPower ? `${l.fiscalPower} CV` : '—' },
   ];
 
   const flags = [
-    l.mileageGuaranteed === false && { tone: 'warn', text: 'Kilometrage non garanti par le vendeur' },
-    l.imported && { tone: 'warn', text: 'Vehicule importe' },
-    l.accidented && { tone: 'warn', text: 'Vehicule accidente ou passe en procedure VEI' },
+    l.mileageGuaranteed === false && { tone: 'warn', text: d.listing.flags.mileageNotGuaranteed },
+    l.imported && { tone: 'warn', text: d.listing.flags.imported },
+    l.accidented && { tone: 'warn', text: d.listing.flags.accidented },
   ].filter(Boolean) as { tone: string; text: string }[];
 
   return (
@@ -73,16 +65,16 @@ export default function ListingDetail() {
           className="pressable mb-7 flex items-center gap-2 text-[15px] font-semibold text-ink-2 transition-colors duration-200 hover:text-petrol-600"
         >
           <ArrowLeft size={18} />
-          Retour aux annonces
+          {d.listing.back}
         </button>
 
         <div className="grid gap-8 lg:grid-cols-2">
           {/* galerie */}
           <div>
             <div className="relative aspect-[4/3] overflow-hidden rounded-[20px] bg-petrol-50">
-              <img src={gallery[active]} alt={`${l.title} — photo ${active + 1}`} className="h-full w-full object-cover" />
+              <img src={gallery[active]} alt={fmt(d.listing.photoAlt, { title: l.title, n: active + 1 })} className="h-full w-full object-cover" />
               <span className="label-tight absolute left-4 top-4 rounded-full bg-paper/95 px-3 py-1 text-[10px] text-ink">
-                {conditionLabels[l.condition] ?? l.condition}
+                {d.buySell.conditions[l.condition as keyof typeof d.buySell.conditions] ?? l.condition}
               </span>
             </div>
             {gallery.length > 1 && (
@@ -91,7 +83,7 @@ export default function ListingDetail() {
                   <button
                     key={i}
                     onClick={() => setActive(i)}
-                    aria-label={`Photo ${i + 1}`}
+                    aria-label={fmt(d.buySell.sell.s3.photoAlt, { n: i + 1 })}
                     className={`pressable aspect-[4/3] overflow-hidden rounded-[10px] transition-opacity duration-200 ${i === active ? 'ring-2 ring-petrol-600' : 'opacity-65 hover:opacity-100'}`}
                   >
                     <img src={src} alt="" className="h-full w-full object-cover" />
@@ -111,13 +103,13 @@ export default function ListingDetail() {
             </p>
 
             <p className="nums mt-5 font-poster text-[clamp(2.2rem,4.5vw,3.2rem)] text-petrol-600">
-              {l.price.toLocaleString('fr-FR')} EUR
+              {f.euro(l.price)}
             </p>
 
             {l.critAir && (
               <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-azure-300/45 px-3.5 py-1.5 text-[13px] font-semibold text-azure-700">
                 <Leaf size={14} />
-                {CRIT_AIR_LABELS[l.critAir] ?? `Crit'Air ${l.critAir}`}
+                {d.critAir[l.critAir] ?? `Crit'Air ${l.critAir}`}
               </p>
             )}
 
@@ -144,7 +136,7 @@ export default function ListingDetail() {
 
             {l.vin && (
               <p className="nums mt-4 text-[13px] text-ink-2">
-                Numero de serie (VIN) : <span className="font-semibold text-ink">{l.vin}</span>
+                {d.listing.vin} : <span className="font-semibold text-ink">{l.vin}</span>
               </p>
             )}
           </div>
@@ -152,18 +144,15 @@ export default function ListingDetail() {
 
         {l.description && (
           <section className="mt-12">
-            <h2 className="font-poster text-[clamp(1.5rem,3vw,2.2rem)] text-ink">Description du vendeur</h2>
+            <h2 className="font-poster text-[clamp(1.5rem,3vw,2.2rem)] text-ink">{d.listing.descriptionTitle}</h2>
             <p className="mt-4 max-w-[70ch] whitespace-pre-line text-[16px] leading-relaxed text-ink-2">{l.description}</p>
           </section>
         )}
 
         {/* documents */}
         <section className="mt-12">
-          <h2 className="font-poster text-[clamp(1.5rem,3vw,2.2rem)] text-ink">Documents de la vente</h2>
-          <p className="mt-2 max-w-[68ch] text-[15px] leading-relaxed text-ink-2">
-            Ce que le vendeur declare pouvoir fournir. Sans ces papiers, vous ne pourrez pas faire
-            votre carte grise.
-          </p>
+          <h2 className="font-poster text-[clamp(1.5rem,3vw,2.2rem)] text-ink">{d.listing.documentsTitle}</h2>
+          <p className="mt-2 max-w-[68ch] text-[15px] leading-relaxed text-ink-2">{d.listing.documentsSub}</p>
 
           <ul className="mt-6 divide-y divide-ink/10 rounded-[16px] border border-ink/12 bg-paper">
             {rules.map((r) => {
@@ -174,13 +163,15 @@ export default function ListingDetail() {
                     {ok
                       ? <ShieldCheck size={16} className="shrink-0 text-petrol-500" />
                       : <AlertTriangle size={16} className="shrink-0 text-terra-500" />}
-                    <span className="text-[14px] font-bold text-ink">{r.label}</span>
+                    <span className="text-[14px] font-bold text-ink">{fmt(d.docs[r.key].label, r.params)}</span>
                   </span>
                   <span className="flex-1">
                     <span className={`block text-[15px] font-semibold ${ok ? 'text-petrol-700' : 'text-terra-700'}`}>
-                      {ok ? 'Fourni par le vendeur' : r.mandatory ? 'Non fourni — bloquant' : 'Non fourni'}
+                      {ok ? d.listing.provided : r.mandatory ? d.listing.missingBlocking : d.listing.missing}
                     </span>
-                    <span className="mt-0.5 block text-[13px] leading-relaxed text-ink-2">{r.help}</span>
+                    <span className="mt-0.5 block text-[13px] leading-relaxed text-ink-2">
+                      {fmt((d.docs[r.key] as Record<string, string>)[r.helpKey] ?? '', r.params)}
+                    </span>
                   </span>
                 </li>
               );
@@ -189,16 +180,13 @@ export default function ListingDetail() {
 
           <p className="mt-5 flex items-start gap-2 rounded-[12px] border border-ink/12 bg-paper p-4 text-[13px] leading-relaxed text-ink-2">
             <FileCheck2 size={15} className="mt-0.5 shrink-0 text-petrol-500" />
-            Le jour de la vente : le vendeur barre et signe la carte grise, vous signez chacun un
-            exemplaire du Cerfa {CERFA_CESSION}, puis il vous transmet le code de cession obtenu
-            apres sa declaration en ligne. Verifiez aussi l historique gratuit du vehicule sur
-            HistoVec avant de payer.
+            {fmt(d.listing.saleDayNote, { cerfa: CERFA_CESSION })}
           </p>
         </section>
 
         {/* vendeur */}
         <section className="mt-12 rounded-[20px] bg-petrol-700 p-6 text-paper md:p-8">
-          <h2 className="font-poster text-[clamp(1.5rem,3vw,2.2rem)]">Contacter le vendeur</h2>
+          <h2 className="font-poster text-[clamp(1.5rem,3vw,2.2rem)]">{d.listing.contactTitle}</h2>
           <p className="mt-2 text-[15px] text-petrol-100">
             {l.sellerName} &middot; {l.location}
           </p>
@@ -212,13 +200,12 @@ export default function ListingDetail() {
             {l.sellerEmail && (
               <a href={`mailto:${l.sellerEmail}`} className="pressable flex items-center gap-2 rounded-[12px] border border-paper/35 px-6 py-3.5 text-[15px] font-bold text-paper transition-colors duration-200 hover:bg-paper/10">
                 <Mail size={17} />
-                Envoyer un email
+                {d.listing.sendEmail}
               </a>
             )}
           </div>
           <p className="mt-5 text-[13px] leading-relaxed text-petrol-100">
-            Roulez met en relation et ne participe pas a la transaction. Ne versez jamais d acompte
-            avant d avoir vu le vehicule et verifie les documents.
+            {d.listing.contactDisclaimer}
           </p>
         </section>
       </div>

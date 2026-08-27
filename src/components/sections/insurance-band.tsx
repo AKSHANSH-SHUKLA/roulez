@@ -4,9 +4,12 @@ import { useEffect, useState } from 'react';
 import { ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { Reveal } from '@/components/motion/tilt';
 import { useAppStore } from '@/lib/store';
+import { useDict, useLocale } from '@/lib/i18n';
 import type { InsurancePlan } from '@/lib/types';
 
 export default function InsuranceBand() {
+  const d = useDict();
+  const locale = useLocale();
   const { setPage } = useAppStore();
   const [plans, setPlans] = useState<InsurancePlan[]>([]);
 
@@ -29,11 +32,10 @@ export default function InsuranceBand() {
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <h2 className="font-poster max-w-[17ch] text-[clamp(2rem,4.6vw,3.6rem)]">
-              L assurance, en clair
+              {d.insuranceBand.title}
             </h2>
             <p className="max-w-[38ch] text-[15px] leading-relaxed text-paper/80">
-              Sans option, une franchise de 900 a 2 600 EUR reste a votre charge en cas de dommage.
-              Voici comment la reduire, ou pourquoi vous pouvez vous en passer.
+              {d.insuranceBand.sub}
             </p>
           </div>
         </Reveal>
@@ -42,13 +44,13 @@ export default function InsuranceBand() {
           {(plans.length > 0 ? plans : []).map((plan, i) => (
             <Reveal key={plan.id} delay={i * 0.07}>
               <div className="flex h-full flex-col rounded-[20px] bg-paper p-7 text-ink">
-                <h3 className="font-poster-md text-2xl">{plan.name}</h3>
-                <p className="mt-1 text-[14px] text-ink-2">{plan.description}</p>
+                <h3 className="font-poster-md text-2xl">{(locale === 'en' && plan.nameEn) || plan.name}</h3>
+                <p className="mt-1 text-[14px] text-ink-2">{(locale === 'en' && plan.descriptionEn) || plan.description}</p>
                 <p className="nums mt-5 font-poster text-3xl text-azure-700">
-                  {plan.dailyPrice} EUR<span className="text-base font-medium text-ink-2">/jour</span>
+                  {plan.dailyPrice} EUR<span className="text-base font-medium text-ink-2">{d.common.perDay}</span>
                 </p>
                 <ul className="mt-5 space-y-2">
-                  {plan.coverage.map((c) => (
+                  {((locale === 'en' && plan.coverageEn) || plan.coverage).map((c) => (
                     <li key={c} className="flex items-start gap-2 text-[14px] text-ink-2">
                       <ShieldCheck size={15} className="mt-0.5 shrink-0 text-azure-500" />
                       {c}
@@ -64,7 +66,7 @@ export default function InsuranceBand() {
           onClick={() => setPage('insurance')}
           className="pressable mt-10 flex items-center gap-2 rounded-[12px] bg-saffron-500 px-6 py-3.5 text-[15px] font-bold text-ink transition-colors duration-200 hover:bg-saffron-300"
         >
-          Tout savoir sur l assurance
+          {d.insuranceBand.cta}
           <ArrowUpRight size={17} />
         </button>
       </div>

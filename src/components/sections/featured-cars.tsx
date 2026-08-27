@@ -5,37 +5,8 @@ import { motion } from 'framer-motion';
 import { Settings2, Fuel, Briefcase, ArrowUpRight } from 'lucide-react';
 import { Tilt, Reveal } from '@/components/motion/tilt';
 import { useAppStore, useBookingStore } from '@/lib/store';
+import { useDict, useFormat } from '@/lib/i18n';
 import type { RentalCar } from '@/lib/types';
-
-const categoryBorderColor: Record<string, string> = {
-  economy: 'border-l-blue-500',
-  compact: 'border-l-emerald-500',
-  suv: 'border-l-orange-500',
-  luxury: 'border-l-purple-500',
-  van: 'border-l-red-500',
-  electric: 'border-l-teal-500',
-};
-
-const categoryLabels: Record<string, string> = {
-  economy: 'Economique',
-  compact: 'Compacte',
-  suv: 'SUV',
-  luxury: 'Luxe',
-  van: 'Utilitaire',
-  electric: 'Electrique',
-};
-
-const fuelLabels: Record<string, string> = {
-  diesel: 'Diesel',
-  essence: 'Essence',
-  hybride: 'Hybride',
-  electrique: 'Electrique',
-};
-
-const transmissionLabels: Record<string, string> = {
-  manual: 'Manuelle',
-  automatic: 'Automatique',
-};
 
 const fallbackCars: RentalCar[] = [
   { id: '1', name: 'Renault Clio', category: 'economy', transmission: 'manual', fuel: 'essence', seats: 5, doors: 4, bags: 2, ac: true, pricePerDay: 29, imageUrl: '', supplierId: 's1', supplierName: 'Europcar', locationId: '1', features: ['GPS', 'Bluetooth'] },
@@ -51,6 +22,8 @@ const fallbackImages = ['/cars/renault-clio.jpg','/cars/peugeot-208.jpg','/cars/
 export default function FeaturedCars() {
   const [cars, setCars] = useState<RentalCar[]>([]);
   const [loading, setLoading] = useState(true);
+  const d = useDict();
+  const f = useFormat();
   const { setPage, setSelectedCar } = useAppStore();
   const { setFilters, setSearchResults } = useBookingStore();
 
@@ -103,10 +76,10 @@ export default function FeaturedCars() {
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <h2 className="font-poster max-w-[14ch] text-[clamp(2rem,4.6vw,3.6rem)] text-ink">
-              Les plus reservees
+              {d.featured.title}
             </h2>
             <p className="max-w-[32ch] text-[15px] leading-relaxed text-ink-2">
-              Prix par jour, taxes comprises. Le modele exact peut varier.
+              {d.featured.sub}
             </p>
           </div>
         </Reveal>
@@ -134,29 +107,29 @@ export default function FeaturedCars() {
                         className="h-full w-full object-cover transition-transform duration-[600ms] ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.07]"
                       />
                       <span className="label-tight absolute left-4 top-4 rounded-full bg-paper/95 px-3 py-1 text-[10px] text-ink">
-                        {categoryLabels[car.category] || car.category}
+                        {d.categories[car.category as keyof typeof d.categories] ?? car.category}
                       </span>
                     </div>
 
                     <div className="flex flex-1 flex-col p-6">
                       <h3 className="font-poster-md text-xl text-ink">{car.name}</h3>
                       <p className="mt-1 text-sm text-ink-2">
-                        ou similaire &middot; {car.supplierName}
+                        {d.common.orSimilar} &middot; {car.supplierName}
                       </p>
 
                       <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-[13px] text-ink-2">
-                        <li className="flex items-center gap-1.5"><Settings2 size={14} className="text-petrol-500" />{transmissionLabels[car.transmission] || car.transmission}</li>
-                        <li className="flex items-center gap-1.5"><Fuel size={14} className="text-petrol-500" />{fuelLabels[car.fuel] || car.fuel}</li>
-                        <li className="flex items-center gap-1.5"><Briefcase size={14} className="text-petrol-500" /><span className="nums">{car.bags}</span> valises</li>
+                        <li className="flex items-center gap-1.5"><Settings2 size={14} className="text-petrol-500" />{d.transmissions[car.transmission as keyof typeof d.transmissions] ?? car.transmission}</li>
+                        <li className="flex items-center gap-1.5"><Fuel size={14} className="text-petrol-500" />{d.fuels[car.fuel as keyof typeof d.fuels] ?? car.fuel}</li>
+                        <li className="flex items-center gap-1.5"><Briefcase size={14} className="text-petrol-500" /><span className="nums">{car.bags}</span> {d.featured.bags}</li>
                       </ul>
 
                       <div className="mt-auto flex items-end justify-between border-t border-ink/10 pt-5">
                         <span className="nums font-poster-md text-2xl text-petrol-600">
-                          {car.pricePerDay} EUR
-                          <span className="ml-1 text-sm font-medium text-ink-2">/jour</span>
+                          {f.euro(car.pricePerDay)}
+                          <span className="ml-1 text-sm font-medium text-ink-2">{d.common.perDay}</span>
                         </span>
                         <span className="flex items-center gap-1 text-sm font-bold text-ink transition-colors duration-200 group-hover:text-petrol-600">
-                          Voir
+                          {d.common.view}
                           <ArrowUpRight size={16} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                         </span>
                       </div>

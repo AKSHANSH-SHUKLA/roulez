@@ -3,19 +3,23 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, User, Car } from 'lucide-react';
 import { useAppStore, useAuthStore } from '@/lib/store';
-
-const links = [
-  { label: 'Accueil', page: 'home' },
-  { label: 'Location', page: 'search' },
-  { label: 'Achat & Vente', page: 'buy-sell' },
-  { label: 'Assurance', page: 'insurance' },
-];
+import { useDict, useLocaleStore, LOCALES } from '@/lib/i18n';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { currentPage, setPage } = useAppStore();
   const { user, setShowAuth } = useAuthStore();
+  const d = useDict();
+  const locale = useLocaleStore((st) => st.locale);
+  const setLocale = useLocaleStore((st) => st.setLocale);
+
+  const links = [
+    { label: d.nav.home, page: 'home' },
+    { label: d.nav.rental, page: 'search' },
+    { label: d.nav.buySell, page: 'buy-sell' },
+    { label: d.nav.insurance, page: 'insurance' },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -62,6 +66,23 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
+          {/* selecteur de langue : deux boutons, pas de menu deroulant a ouvrir */}
+          <div role="group" aria-label={d.nav.language} className="flex items-center rounded-[10px] bg-ink/6 p-0.5">
+            {LOCALES.map((l) => (
+              <button
+                key={l.id}
+                lang={l.hreflang}
+                aria-pressed={locale === l.id}
+                onClick={() => setLocale(l.id)}
+                className={`label-tight rounded-[8px] px-2.5 py-1.5 text-[11px] transition-colors duration-200 ${
+                  locale === l.id ? 'bg-paper text-ink shadow-[0_1px_2px_rgba(20,35,28,0.18)]' : 'text-ink-2 hover:text-ink'
+                }`}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
+
           {user ? (
             <span className="hidden items-center gap-2 rounded-full bg-petrol-50 px-4 py-2 text-sm font-semibold text-petrol-700 md:flex">
               <User size={15} />
@@ -73,13 +94,13 @@ export default function Navbar() {
               className="pressable hidden items-center gap-2 rounded-[10px] bg-ink px-5 py-2.5 text-sm font-bold text-paper transition-colors duration-200 hover:bg-petrol-700 md:flex"
             >
               <User size={15} />
-              Connexion
+              {d.nav.login}
             </button>
           )}
 
           <button
             onClick={() => setOpen(!open)}
-            aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'}
+            aria-label={open ? d.nav.closeMenu : d.nav.openMenu}
             aria-expanded={open}
             className="pressable flex h-11 w-11 items-center justify-center rounded-[10px] text-ink md:hidden"
           >
@@ -113,7 +134,7 @@ export default function Navbar() {
               }}
               className="pressable mt-3 w-full rounded-[10px] bg-ink px-3 py-3.5 text-base font-bold text-paper"
             >
-              Connexion
+              {d.nav.login}
             </button>
           )}
         </div>

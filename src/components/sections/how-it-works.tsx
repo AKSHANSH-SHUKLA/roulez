@@ -1,29 +1,12 @@
 'use client';
 
 import { Reveal } from '@/components/motion/tilt';
-
-const steps = [
-  {
-    n: '01',
-    title: 'Recherchez',
-    description:
-      'Entrez votre lieu de prise en charge, les dates de location et vos preferences. Notre moteur parcourt les offres de tous nos partenaires en un instant.',
-  },
-  {
-    n: '02',
-    title: 'Comparez',
-    description:
-      "Comparez les prix, les vehicules et les conditions cote a cote. Filtrez par categorie, transmission ou fournisseur pour trouver l'offre ideale.",
-  },
-  {
-    n: '03',
-    title: 'Reservez',
-    description:
-      'Une fois votre choix fait, reservez en quelques clics. Vous recevrez une confirmation immediate par email avec tous les details de votre location.',
-  },
-];
+import { useDict } from '@/lib/i18n';
 
 export default function HowItWorks() {
+  const d = useDict();
+  const steps = d.howItWorks.steps.map((s, i) => ({ ...s, n: `0${i + 1}` }));
+
   return (
     <section className="relative overflow-hidden bg-terra-500 py-24 md:py-32">
       <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -34,7 +17,7 @@ export default function HowItWorks() {
       <div className="relative mx-auto max-w-[1400px] px-6 md:px-10">
         <Reveal>
           <h2 className="font-poster max-w-[16ch] text-[clamp(2rem,4.6vw,3.6rem)] text-paper">
-            Trois etapes, rien de plus
+            {d.howItWorks.title}
           </h2>
         </Reveal>
 

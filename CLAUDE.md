@@ -42,22 +42,27 @@ correction de bug. Les changer demande une entree dans `docs/DECISIONS.md`.
    `src/lib/sale-rules.ts` : documents obligatoires, controle technique selon
    l'age du vehicule, delais legaux, validation d'une annonce. Ne jamais
    reecrire une de ces regles dans un composant ni dans une route API.
-6. **Les reponses d'API ont la forme `{ success, data }`.** Cote client,
+6. **Aucune chaine visible en dur dans un composant.** Tout texte affiche vient
+   de `src/lib/i18n/fr.ts`, et `en.ts` doit avoir exactement les memes cles :
+   TypeScript refuse de compiler s'il en manque une. Les modules de `lib/`
+   renvoient des **codes** (`'tooShort'`, `'docRequired'`), jamais des phrases.
+   Les nombres, les montants et les durees passent par `useFormat()`.
+7. **Les reponses d'API ont la forme `{ success, data }`.** Cote client,
    toujours lire avec `const list = Array.isArray(json) ? json : (json?.data ?? [])`.
    Ne jamais faire `setState(await res.json())` : c'est ce qui a mis le site
    hors ligne une fois (`destinations.map is not a function`), et TypeScript ne
    l'attrape pas parce que `res.json()` est `any`.
-7. **Trois activites, trois surfaces distinctes.** Location, Achat & Vente,
+8. **Trois activites, trois surfaces distinctes.** Location, Achat & Vente,
    Assurance. L'assurance ne se dilue pas dans le tunnel de location : elle a sa
    propre page (`currentPage === 'insurance'`) et sa propre section sur
    l'accueil. La fiche vehicule ne garde qu'un choix d'option et un lien vers la
    page assurance.
-8. **Aucun prix, aucune condition, aucune note n'est inventee dans le JSX.**
+9. **Aucun prix, aucune condition, aucune note n'est inventee dans le JSX.**
    Les donnees viennent des routes `/api/*` ou du registre `SUPPLIERS`.
-9. **Palette et typo figees** — voir `docs/DESIGN-SYSTEM.md`. Pas de classes
+10. **Palette et typo figees** — voir `docs/DESIGN-SYSTEM.md`. Pas de classes
    `emerald-*`, `gray-*`, `blue-*` ni de `font-[Inter]` : ce sont les restes de
    l'ancienne version et ils doivent disparaitre, pas se propager.
-10. **Roulez est un comparateur, pas un loueur ni un courtier.** Aucun texte de
+11. **Roulez est un comparateur, pas un loueur ni un courtier.** Aucun texte de
    l'interface ne doit laisser croire que Roulez assure, loue ou encaisse. Voir
    `docs/PRD.md`, section contraintes legales.
 
@@ -83,6 +88,7 @@ src/
     locations.ts         toute la France (genere par /root/gen/build_locations.py)
     fleet.ts             flotte et prix derives du lieu de prise en charge
     sale-rules.ts        obligations legales de la vente d'occasion (France)
+    i18n/                dictionnaires FR/EN, store de langue, formatage
 ```
 
 ## 3. Navigation
@@ -100,7 +106,7 @@ ecran (voir `docs/PROGRESS.md`).
 ## 4. Avant de livrer
 
 ```bash
-npx tsc --noEmit          # doit passer
+npx tsc --noEmit          # doit passer — c'est aussi ce qui verifie que en.ts est complet
 npx next build            # doit passer
 ```
 
@@ -110,7 +116,9 @@ Puis, sur le build de production, verifier au navigateur :
   (un debordement horizontal decale toute la page, c'est deja arrive avec le
   pied de page) ;
 - le parcours accueil → recherche → fiche vehicule → assurance fonctionne ;
-- les bornes de duree renvoient bien une erreur a 0 jour et a 200 jours.
+- les bornes de duree renvoient bien une erreur a 0 jour et a 200 jours ;
+- **le parcours complet en anglais** ne laisse aucun mot francais : basculer sur
+  EN et relire accueil, resultats, fiche, assurance, achat et vente.
 
 Une capture plein page ne suffit pas a valider les sections animees : elles
 apparaissent au defilement (`whileInView`). Il faut faire defiler la page avant

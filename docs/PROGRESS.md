@@ -9,7 +9,7 @@ Ce fichier dit la verite sur ce qui marche. Il se met a jour a chaque livraison.
 ## 1. En une phrase
 
 La vitrine et le parcours de comparaison sont termines et credibles ; les
-donnees, les paiements et la persistance sont simules. Environ **45 %** du
+donnees, les paiements et la persistance sont simules. Environ **50 %** du
 chemin vers un site exploitable, **0 EUR** depense a ce jour.
 
 ## 2. Ce qui fonctionne
@@ -27,7 +27,8 @@ chemin vers un site exploitable, **0 EUR** depense a ce jour.
 | Connexion | Demonstration | Aucune verification reelle, non persiste |
 | Reservation | Demonstration | Enregistree en memoire, perdue au redemarrage |
 | Photos | Fait | Photos reelles Wikimedia, credits sur `/credits` |
-| Charte visuelle | Partiel | Accueil, recherche, fiche vehicule, assurance, achat/vente et fiche annonce faits. Seule la fenetre de connexion reste a l'ancienne charte |
+| Charte visuelle | Fait | Tous les ecrans sont passes a la charte « affiche », y compris la fenetre de connexion et la page credits |
+| Langues | Fait | Francais et anglais, selecteur dans la barre de navigation, choix conserve, langue du navigateur par defaut |
 
 ## 3. Ce qui n'existe pas
 
@@ -60,22 +61,20 @@ l'immatriculation Atout France (voir `docs/PRD.md`, section 6).
 
 ### Maintenant (technique, sans budget)
 
-1. **Reprendre `auth-modal.tsx`** a la nouvelle charte : c'est le dernier ecran
-   qui utilise encore `emerald-*` et `gray-*`.
-2. **Migrer vers de vraies URL** (App Router) en une seule fois : `/recherche`,
+1. **Migrer vers de vraies URL** (App Router) en une seule fois : `/recherche`,
    `/voiture/[id]`, `/occasion`, `/assurance`. Debloque le partage de lien, le
    bouton retour et le referencement.
-3. **Persistance** : une base Postgres et un schema pour les reservations et les
+2. **Persistance** : une base Postgres et un schema pour les reservations et les
    annonces. Sans cela, aucune reservation ne survit.
-4. **Ecran de paiement** (maquette d'abord) : recapitulatif, conditions,
+3. **Ecran de paiement** (maquette d'abord) : recapitulatif, conditions,
    moyen de paiement, avec la caution clairement hors total.
 
 ### Ensuite (demande une decision commerciale)
 
-5. **S'inscrire a un programme d'affiliation** et remplacer les donnees de
+4. **S'inscrire a un programme d'affiliation** et remplacer les donnees de
    demonstration par un vrai flux dans `termsFor()`.
-6. **Societe et compte Stripe** : SIREN/SIRET, Kbis, IBAN francais.
-7. **Page « Louez votre voiture » en liste d'attente** pour mesurer la demande
+5. **Societe et compte Stripe** : SIREN/SIRET, Kbis, IBAN francais.
+6. **Page « Louez votre voiture » en liste d'attente** pour mesurer la demande
    P2P avant d'engager des frais d'assurance (ADR-006).
 
 ## 6. Journal des livraisons
@@ -90,3 +89,4 @@ l'immatriculation Atout France (voir `docs/PRD.md`, section 6).
 | 2026-08-27 | Conditions commerciales, bornes de duree, section assurance separee, selecteur Louer/Acheter/Vendre (ADR-003, 004, 005) |
 | 2026-08-27 | Couverture de toute la France (485 lieux), flotte et prix par lieu, rythme de couleurs de l'accueil, parallaxe du heros rendue visible |
 | 2026-08-27 | Recherche d'annonces par marque et budget, depot d'annonce avec photos et obligations legales francaises (ADR-010), refonte de la fiche annonce |
+| 2026-08-27 | Site bilingue francais / anglais (ADR-011), fenetre de connexion et page credits reprises a la nouvelle charte |

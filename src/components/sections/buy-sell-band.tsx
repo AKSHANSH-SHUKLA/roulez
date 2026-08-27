@@ -3,42 +3,32 @@
 import { ArrowUpRight, Gauge, FileText, Tag, Users } from 'lucide-react';
 import { Reveal } from '@/components/motion/tilt';
 import { useAppStore } from '@/lib/store';
-
-const panels = [
-  {
-    id: 'acheter',
-    kicker: '01',
-    title: 'Acheter',
-    body: "Des annonces de particuliers et de professionnels partout en France. Kilometrage, annee, controle technique et prix affiches des la liste.",
-    points: [
-      { icon: Gauge, label: 'Kilometrage et annee verifies' },
-      { icon: FileText, label: 'Historique et controle technique' },
-      { icon: Users, label: 'Contact direct avec le vendeur' },
-    ],
-    cta: 'Voir les annonces',
-    tone: 'bg-paper text-ink',
-    accentText: 'text-terra-500',
-    accent: 'bg-petrol-600 text-paper hover:bg-petrol-700',
-  },
-  {
-    id: 'vendre',
-    kicker: '02',
-    title: 'Vendre',
-    body: "Publiez votre voiture en quelques minutes. Aucune commission sur la vente, aucun intermediaire, vous fixez votre prix.",
-    points: [
-      { icon: Tag, label: 'Annonce gratuite' },
-      { icon: Users, label: 'Acheteurs dans toute la France' },
-      { icon: FileText, label: 'Vous gardez la main sur le prix' },
-    ],
-    cta: 'Deposer une annonce',
-    tone: 'bg-ink text-paper',
-    accentText: 'text-saffron-500',
-    accent: 'bg-saffron-500 text-ink hover:bg-saffron-300',
-  },
-];
+import { useDict } from '@/lib/i18n';
 
 export default function BuySellBand() {
+  const d = useDict();
   const { setPage, setBuySellTab, setSaleFilters } = useAppStore();
+
+  const panels = [
+    {
+      id: 'acheter',
+      kicker: '01',
+      ...d.buySellBand.buy,
+      icons: [Gauge, FileText, Users],
+      tone: 'bg-paper text-ink',
+      accentText: 'text-terra-500',
+      accent: 'bg-petrol-600 text-paper hover:bg-petrol-700',
+    },
+    {
+      id: 'vendre',
+      kicker: '02',
+      ...d.buySellBand.sell,
+      icons: [Tag, Users, FileText],
+      tone: 'bg-ink text-paper',
+      accentText: 'text-saffron-500',
+      accent: 'bg-saffron-500 text-ink hover:bg-saffron-300',
+    },
+  ];
 
   return (
     <section id="achat-vente" className="relative overflow-hidden bg-saffron-300 py-24 md:py-32">
@@ -48,10 +38,10 @@ export default function BuySellBand() {
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <h2 className="font-poster max-w-[16ch] text-[clamp(2rem,4.6vw,3.6rem)] text-ink">
-              Pas seulement louer
+              {d.buySellBand.title}
             </h2>
             <p className="max-w-[36ch] text-[15px] leading-relaxed text-ink-2">
-              Roulez sert aussi a acheter et a vendre une voiture d occasion, sans commission.
+              {d.buySellBand.sub}
             </p>
           </div>
         </Reveal>
@@ -65,12 +55,15 @@ export default function BuySellBand() {
                 <p className="mt-4 max-w-[42ch] text-[15px] leading-relaxed opacity-80">{p.body}</p>
 
                 <ul className="mt-7 space-y-3">
-                  {p.points.map((pt) => (
-                    <li key={pt.label} className="flex items-center gap-2.5 text-[15px]">
-                      <pt.icon size={17} className={`shrink-0 ${p.accentText}`} />
-                      {pt.label}
-                    </li>
-                  ))}
+                  {p.points.map((label, i) => {
+                    const Icon = p.icons[i];
+                    return (
+                      <li key={label} className="flex items-center gap-2.5 text-[15px]">
+                        <Icon size={17} className={`shrink-0 ${p.accentText}`} />
+                        {label}
+                      </li>
+                    );
+                  })}
                 </ul>
 
                 <button

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Car, ArrowRight } from 'lucide-react';
 import { Tilt, Reveal } from '@/components/motion/tilt';
 import { useAppStore, useBookingStore } from '@/lib/store';
+import { useDict, useFormat, useLocale, fmt } from '@/lib/i18n';
 import type { Destination } from '@/lib/types';
 
 const fallbackImages = ['/destinations/paris.jpg','/destinations/nice.jpg','/destinations/lyon.jpg','/destinations/bordeaux.jpg','/destinations/marseille.jpg','/destinations/toulouse.jpg','/destinations/strasbourg.jpg','/destinations/lille.jpg','/destinations/nantes.jpg','/destinations/montpellier.jpg'];
@@ -13,6 +14,9 @@ export default function PopularDestinations() {
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
+  const d = useDict();
+  const f = useFormat();
+  const locale = useLocale();
   const { setPage } = useAppStore();
   const { setFilters, setSearchResults } = useBookingStore();
 
@@ -89,10 +93,10 @@ export default function PopularDestinations() {
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <h2 className="font-poster max-w-[15ch] text-[clamp(2rem,4.6vw,3.6rem)] text-ink">
-              Ou voulez-vous rouler
+              {d.destinations.title}
             </h2>
             <p className="max-w-[34ch] text-[15px] leading-relaxed text-ink-2">
-              Onze villes de depart, du Vieux-Port aux quais de Bordeaux.
+              {d.destinations.sub}
             </p>
           </div>
         </Reveal>
@@ -127,15 +131,15 @@ export default function PopularDestinations() {
                       <div className="absolute inset-x-0 bottom-0 p-6">
                         <h3 className="font-poster-md text-2xl text-paper">{dest.name}</h3>
                         <p className="mt-1.5 line-clamp-2 text-[13px] leading-snug text-paper/80">
-                          {dest.description}
+                          {(locale === 'en' && dest.descriptionEn) || dest.description}
                         </p>
                         <div className="mt-4 flex items-center justify-between border-t border-paper/25 pt-3.5">
                           <span className="flex items-center gap-1.5 text-[13px] text-paper/85">
                             <Car size={14} className="text-saffron-300" />
-                            <span className="nums">{dest.carCount}</span> voitures
+                            <span className="nums">{f.number(dest.carCount)}</span> {d.destinations.cars}
                           </span>
                           <span className="nums flex items-center gap-1.5 text-[13px] font-bold text-saffron-300">
-                            des {dest.startingPrice} EUR/jour
+                            {fmt(d.destinations.from, { price: f.euro(dest.startingPrice) })}
                             <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
                           </span>
                         </div>

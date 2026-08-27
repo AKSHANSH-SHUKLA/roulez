@@ -16,16 +16,11 @@ import type { RentalCar } from './types';
 
 export type FuelPolicy = 'plein-plein' | 'identique' | 'plein-vide';
 
-export const fuelPolicyLabels: Record<FuelPolicy, string> = {
-  'plein-plein': 'Plein / plein',
-  identique: 'Niveau identique',
-  'plein-vide': 'Plein / vide',
-};
-
-export const fuelPolicyHelp: Record<FuelPolicy, string> = {
-  'plein-plein': 'Vous partez avec le plein et vous rendez le vehicule avec le plein. Rien a payer en plus.',
-  identique: 'Vous rendez le vehicule avec le meme niveau de carburant qu au depart.',
-  'plein-vide': 'Le plein est facture au depart et le carburant restant n est pas rembourse.',
+/** Cle de dictionnaire pour chaque politique carburant. */
+export const fuelPolicyKey: Record<FuelPolicy, 'fullFull' | 'same' | 'fullEmpty'> = {
+  'plein-plein': 'fullFull',
+  identique: 'same',
+  'plein-vide': 'fullEmpty',
 };
 
 export interface SupplierProfile {
@@ -120,16 +115,4 @@ export function quoteFor(pricePerDay: number, days: number, insurancePerDay = 0)
   const carTotal = pricePerDay * d;
   const insuranceTotal = insurancePerDay * d;
   return { days: d, perDay: pricePerDay, carTotal, insuranceTotal, total: carTotal + insuranceTotal };
-}
-
-export function euro(n: number): string {
-  return `${Math.round(n).toLocaleString('fr-FR')} EUR`;
-}
-
-export function mileageLabel(terms: RentalTerms): string {
-  return terms.unlimitedMileage ? 'Kilometrage illimite' : `${terms.kmPerDay} km/jour inclus`;
-}
-
-export function cardsLabel(terms: RentalTerms): string {
-  return terms.acceptsDebitCard ? 'Carte credit ou debit' : 'Carte de credit exigee';
 }
