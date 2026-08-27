@@ -96,6 +96,23 @@ propose tout le catalogue, une ville moyenne 65 %, une petite ville 38 %.
 Ce fichier disparait le jour ou un vrai flux fournisseur donne la disponibilite
 reelle. Rien d'autre ne bouge.
 
+### `src/lib/sale-rules.ts`
+
+Les obligations du vendeur d'un vehicule d'occasion en France, sous forme de
+code plutot que de texte d'aide :
+
+- `requiresControleTechnique(mec)` — vrai au-dela de 4 ans ;
+- `controleTechniqueValid(date)` — moins de 6 mois ;
+- `documentRules(mec)` — la liste des documents avec, pour chacun, s'il est
+  obligatoire pour ce vehicule precis et pourquoi ;
+- `validateListing(draft)` — refuse une annonce incomplete, avec un message par
+  champ.
+
+Les constantes legales (`CERFA_CESSION`, `CSA_MAX_AGE_DAYS`,
+`ANTS_DECLARATION_DAYS`, `ANTS_FINE_EUR`) sont exportees et reutilisees dans le
+texte de l'interface, pour qu'un changement de reglementation se fasse a un seul
+endroit.
+
 ### `src/lib/store.ts`
 
 Trois stores Zustand, volontairement separes :
@@ -135,7 +152,7 @@ Toutes en memoire, toutes au format `{ success, data }`.
 | `GET /api/destinations` | 11 villes |
 | `GET /api/locations?q=` | Recherche dans les 485 lieux de France |
 | `GET /api/insurance` | 3 formules |
-| `GET /api/sale-listings` | Annonces d'occasion |
+| `GET /api/sale-listings` | Annonces d'occasion. Filtres `q` (marque ou modele, sans accents), `maxPrice`, `minPrice`, `fuelType`, `condition` |
 | `POST /api/bookings` | Cree une reservation en memoire, renvoie une reference |
 | `POST /api/auth` | Connexion factice |
 

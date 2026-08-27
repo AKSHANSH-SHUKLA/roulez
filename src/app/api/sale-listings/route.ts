@@ -15,6 +15,7 @@ let listings: CarSaleListing[] = [
     color: 'blanc',
     description: 'Renault Clio en excellent etat, entretien regulier, premiere main. Equipements complets avec GPS et camera de recul.',
     imageUrl: '/cars/renault-clio.jpg',
+    images: ['/cars/renault-clio.jpg'],
     sellerName: 'Pierre Dupont',
     sellerPhone: '+33 6 12 34 56 78',
     sellerEmail: 'pierre.dupont@email.com',
@@ -35,6 +36,7 @@ let listings: CarSaleListing[] = [
     color: 'noir',
     description: 'SUV familial parfait pour les longs trajets. Finition haut de gamme, toit panoramique, sieges cuir.',
     imageUrl: '/cars/peugeot-3008.jpg',
+    images: ['/cars/peugeot-3008.jpg'],
     sellerName: 'Marie Laurent',
     sellerPhone: '+33 6 23 45 67 89',
     sellerEmail: 'marie.laurent@email.com',
@@ -55,6 +57,7 @@ let listings: CarSaleListing[] = [
     color: 'gris',
     description: 'Citroen C3 ideal pour la ville. Compact, economique et facile a stationner.',
     imageUrl: '/cars/citroen-c3.jpg',
+    images: ['/cars/citroen-c3.jpg'],
     sellerName: 'Jean Martin',
     sellerPhone: '+33 6 34 56 78 90',
     sellerEmail: 'jean.martin@email.com',
@@ -75,6 +78,7 @@ let listings: CarSaleListing[] = [
     color: 'blanc',
     description: 'Volkswagen Golf en tres bon etat. Confortable et fiable, ideale pour les trajets quotidiens.',
     imageUrl: '/cars/volkswagen-golf.jpg',
+    images: ['/cars/volkswagen-golf.jpg'],
     sellerName: 'Sophie Bernard',
     sellerPhone: '+33 6 45 67 89 01',
     sellerEmail: 'sophie.bernard@email.com',
@@ -95,6 +99,7 @@ let listings: CarSaleListing[] = [
     color: 'bleu',
     description: 'BMW Serie 3 premium avec finition M Sport. Performance et elegance reunies.',
     imageUrl: '/cars/bmw-serie-3.jpg',
+    images: ['/cars/bmw-serie-3.jpg'],
     sellerName: 'Lucas Moreau',
     sellerPhone: '+33 6 56 78 90 12',
     sellerEmail: 'lucas.moreau@email.com',
@@ -115,6 +120,7 @@ let listings: CarSaleListing[] = [
     color: 'vert',
     description: 'Dacia Duster 4x4 quasi neuf. Parfait pour les aventures hors des sentiers battus.',
     imageUrl: '/cars/dacia-duster.jpg',
+    images: ['/cars/dacia-duster.jpg'],
     sellerName: 'Claire Petit',
     sellerPhone: '+33 6 67 89 01 23',
     sellerEmail: 'claire.petit@email.com',
@@ -135,6 +141,7 @@ let listings: CarSaleListing[] = [
     color: 'blanc',
     description: 'Tesla Model 3 avec autopilote. Faible kilometrage, batterie en parfait etat. Autonomie 500km.',
     imageUrl: '/cars/tesla-model-3.jpg',
+    images: ['/cars/tesla-model-3.jpg'],
     sellerName: 'Antoine Dubois',
     sellerPhone: '+33 6 78 90 12 34',
     sellerEmail: 'antoine.dubois@email.com',
@@ -155,6 +162,7 @@ let listings: CarSaleListing[] = [
     color: 'rouge',
     description: 'Fiat 500 iconique. Parfaite pour se garer en ville. Quelques rayures mineures mais mecanique sans probleme.',
     imageUrl: '/cars/fiat-500.jpg',
+    images: ['/cars/fiat-500.jpg'],
     sellerName: 'Emma Leroy',
     sellerPhone: '+33 6 89 01 23 45',
     sellerEmail: 'emma.leroy@email.com',
@@ -175,6 +183,18 @@ function randomChars(length: number, charset: string): string {
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   let filtered = [...listings];
+
+  // Recherche libre sur le titre, la marque et le modele (sans accents)
+  const q = searchParams.get('q');
+  if (q && q.trim()) {
+    const norm = (v: string) =>
+      v.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const needles = norm(q).split(/\s+/).filter(Boolean);
+    filtered = filtered.filter((l) => {
+      const hay = norm(`${l.title} ${l.brand} ${l.model}`);
+      return needles.every((n) => hay.includes(n));
+    });
+  }
 
   const condition = searchParams.get('condition');
   if (condition) {
@@ -214,13 +234,30 @@ export async function POST(request: NextRequest) {
     transmission: body.transmission,
     color: body.color,
     description: body.description,
-    imageUrl: body.imageUrl || '/cars/renault-clio.jpg',
+    imageUrl: body.imageUrl || body.images?.[0] || '/cars/renault-clio.jpg',
+    images: Array.isArray(body.images) && body.images.length > 0
+      ? body.images
+      : [body.imageUrl || '/cars/renault-clio.jpg'],
     sellerName: body.sellerName,
     sellerPhone: body.sellerPhone,
     sellerEmail: body.sellerEmail,
     location: body.location,
-    condition: body.condition,
+    condition: body.condition ?? 'bon',
     createdAt: new Date().toISOString(),
+
+    firstRegistration: body.firstRegistration,
+    vin: body.vin || undefined,
+    plate: body.plate || undefined,
+    doors: body.doors,
+    seats: body.seats,
+    fiscalPower: body.fiscalPower,
+    co2: body.co2,
+    critAir: body.critAir,
+    owners: body.owners,
+    mileageGuaranteed: body.mileageGuaranteed !== false,
+    imported: Boolean(body.imported),
+    accidented: Boolean(body.accidented),
+    documents: body.documents,
   };
 
   listings.push(listing);

@@ -52,6 +52,24 @@ export interface Booking {
   createdAt: string;
 }
 
+export type CritAir = '0' | '1' | '2' | '3' | '4' | '5' | 'non-classe';
+
+/** Les documents que le vendeur declare pouvoir fournir. Voir src/lib/sale-rules.ts. */
+export interface SaleDocuments {
+  /** Certificat d'immatriculation (carte grise) au nom du vendeur */
+  carteGrise: boolean;
+  /** Proces-verbal de controle technique */
+  controleTechnique: boolean;
+  /** Date du controle technique (yyyy-mm-dd) */
+  controleTechniqueDate?: string;
+  /** Certificat de situation administrative (non-gage), moins de 15 jours */
+  certificatSituation: boolean;
+  /** Certificat de cession Cerfa 15776*02, en deux exemplaires */
+  certificatCession: boolean;
+  /** Carnet d'entretien et factures — facultatif mais rassurant */
+  carnetEntretien: boolean;
+}
+
 export interface CarSaleListing {
   id: string;
   title: string;
@@ -64,13 +82,41 @@ export interface CarSaleListing {
   transmission: string;
   color: string;
   description: string;
+  /** Premiere photo, conservee pour la compatibilite des cartes */
   imageUrl: string;
+  /** Toutes les photos de l'annonce */
+  images: string[];
   sellerName: string;
   sellerPhone: string;
   sellerEmail: string;
   location: string;
   condition: 'excellent' | 'bon' | 'correct';
   createdAt: string;
+
+  /* --- Identite du vehicule (obligations d'information du vendeur) --- */
+  /** Date de premiere mise en circulation (yyyy-mm) */
+  firstRegistration?: string;
+  /** Numero de serie / VIN */
+  vin?: string;
+  /** Immatriculation, affichee partiellement dans l'annonce */
+  plate?: string;
+  doors?: number;
+  seats?: number;
+  /** Puissance fiscale en CV */
+  fiscalPower?: number;
+  co2?: number;
+  critAir?: CritAir;
+
+  /* --- Etat et historique --- */
+  owners?: number;
+  /** Kilometrage garanti par le vendeur, ou "non garanti" */
+  mileageGuaranteed?: boolean;
+  imported?: boolean;
+  /** Vehicule accidente / procedure VEI */
+  accidented?: boolean;
+
+  /* --- Documents --- */
+  documents?: SaleDocuments;
 }
 
 export interface Destination {

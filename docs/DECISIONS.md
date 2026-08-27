@@ -171,3 +171,37 @@ la meme famille, alternance sombre / clair conservee.
 
 **Consequence.** Ajouter une section demande de choisir sa place dans la
 sequence, pas seulement son contenu.
+
+---
+
+## ADR-010 — Les obligations legales de la vente sont dans le produit, pas dans une page d'aide
+
+**Date** : 2026-08-27 · **Statut** : accepte
+
+**Contexte.** Le formulaire de depot d'annonce demandait onze champs et aucune
+photo. Un particulier qui remplissait ce formulaire n'avait aucun moyen de
+savoir qu'il lui manquait un controle technique de moins de 6 mois, un
+certificat de situation de moins de 15 jours et un Cerfa en deux exemplaires.
+Il publiait une annonce, trouvait un acheteur, et la vente s'arretait au moment
+de signer.
+
+**Decision.** Le formulaire porte les obligations : photos (3 minimum),
+identite complete du vehicule (mise en circulation, VIN, Crit'Air, CO2,
+puissance fiscale), etat et historique a declarer (kilometrage garanti, import,
+sinistre), et une liste de documents ou chaque ligne indique si elle est
+obligatoire **pour ce vehicule** et pourquoi. `validateListing()` refuse la
+publication tant qu'il manque un document obligatoire.
+
+L'annonce publiee affiche ensuite ce que le vendeur a declare pouvoir fournir,
+et signale en rouge ce qui manque.
+
+**Consequence.** Le formulaire est plus long qu'un formulaire de petites
+annonces classique. C'est assume : une annonce qui ne peut pas aboutir a une
+vente ne vaut rien, ni pour le vendeur ni pour l'acheteur. C'est aussi la
+difference que Roulez peut revendiquer face a une place de marche generaliste.
+
+**A verifier avant la mise en production.** Les regles ci-dessus refletent l'etat
+du droit consulte le 27 aout 2026 (Cerfa 15776*02, declaration ANTS sous 15
+jours sous peine de 135 EUR, controle technique de moins de 6 mois au-dela de 4
+ans, certificat de situation de moins de 15 jours). Elles doivent etre revues
+par un juriste avant toute mise en ligne commerciale.

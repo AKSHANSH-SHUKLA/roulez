@@ -23,11 +23,11 @@ chemin vers un site exploitable, **0 EUR** depense a ce jour.
 | Conditions commerciales | Fait | Total, caution, franchise, annulation, note, cartes, carburant, kilometrage — en liste **et** en fiche |
 | Fiche vehicule | Fait | Conditions detaillees, option assurance, recapitulatif de prix |
 | Assurance | Fait | Section d'accueil et page dediee |
-| Achat / Vente | Fait | Annonces, fiche annonce, depot d'annonce |
+| Achat / Vente | Fait | Recherche par marque/modele et budget, fiche annonce complete, depot d'annonce avec photos et documents obligatoires francais |
 | Connexion | Demonstration | Aucune verification reelle, non persiste |
 | Reservation | Demonstration | Enregistree en memoire, perdue au redemarrage |
 | Photos | Fait | Photos reelles Wikimedia, credits sur `/credits` |
-| Charte visuelle | Partiel | Accueil, recherche, fiche vehicule, assurance faits. Achat/vente, fiche annonce et fenetre de connexion encore a l'ancienne charte |
+| Charte visuelle | Partiel | Accueil, recherche, fiche vehicule, assurance, achat/vente et fiche annonce faits. Seule la fenetre de connexion reste a l'ancienne charte |
 
 ## 3. Ce qui n'existe pas
 
@@ -60,9 +60,8 @@ l'immatriculation Atout France (voir `docs/PRD.md`, section 6).
 
 ### Maintenant (technique, sans budget)
 
-1. **Reprendre `buy-sell.tsx`, `listing-detail.tsx` et `auth-modal.tsx`** a la
-   nouvelle charte. Aujourd'hui, passer de l'accueil a ces ecrans donne
-   l'impression de changer de site.
+1. **Reprendre `auth-modal.tsx`** a la nouvelle charte : c'est le dernier ecran
+   qui utilise encore `emerald-*` et `gray-*`.
 2. **Migrer vers de vraies URL** (App Router) en une seule fois : `/recherche`,
    `/voiture/[id]`, `/occasion`, `/assurance`. Debloque le partage de lien, le
    bouton retour et le referencement.
@@ -90,3 +89,4 @@ l'immatriculation Atout France (voir `docs/PRD.md`, section 6).
 | 2026-08-27 | Correction du debordement horizontal du pied de page, filet de securite sans JavaScript |
 | 2026-08-27 | Conditions commerciales, bornes de duree, section assurance separee, selecteur Louer/Acheter/Vendre (ADR-003, 004, 005) |
 | 2026-08-27 | Couverture de toute la France (485 lieux), flotte et prix par lieu, rythme de couleurs de l'accueil, parallaxe du heros rendue visible |
+| 2026-08-27 | Recherche d'annonces par marque et budget, depot d'annonce avec photos et obligations legales francaises (ADR-010), refonte de la fiche annonce |

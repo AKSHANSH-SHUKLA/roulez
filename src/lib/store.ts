@@ -1,16 +1,29 @@
 import { create } from 'zustand';
 import type { RentalCar, CarSaleListing, SearchFilters, Booking } from './types';
 
+export interface SaleFilters {
+  /** marque ou modele tape par l'utilisateur */
+  q?: string;
+  /** budget maximum en euros */
+  maxPrice?: number;
+}
+
 interface AppStore {
   currentPage: string;
   selectedCar: RentalCar | null;
   selectedListing: CarSaleListing | null;
   searchQuery: string;
+  /** filtres du tunnel Achat, poses depuis le heros */
+  saleFilters: SaleFilters;
+  /** onglet ouvert a l'arrivee sur la page Achat & Vente */
+  buySellTab: 'acheter' | 'vendre';
   toast: string | null;
   setPage: (page: string) => void;
   setSelectedCar: (car: RentalCar | null) => void;
   setSelectedListing: (listing: CarSaleListing | null) => void;
   setSearchQuery: (q: string) => void;
+  setSaleFilters: (f: SaleFilters) => void;
+  setBuySellTab: (t: 'acheter' | 'vendre') => void;
   showToast: (msg: string) => void;
   hideToast: () => void;
 }
@@ -20,11 +33,15 @@ export const useAppStore = create<AppStore>((set) => ({
   selectedCar: null,
   selectedListing: null,
   searchQuery: '',
+  saleFilters: {},
+  buySellTab: 'acheter',
   toast: null,
   setPage: (page) => set({ currentPage: page }),
   setSelectedCar: (car) => set({ selectedCar: car }),
   setSelectedListing: (listing) => set({ selectedListing: listing }),
   setSearchQuery: (q) => set({ searchQuery: q }),
+  setSaleFilters: (f) => set({ saleFilters: f }),
+  setBuySellTab: (t) => set({ buySellTab: t }),
   showToast: (msg) => {
     set({ toast: msg });
     setTimeout(() => set({ toast: null }), 3000);

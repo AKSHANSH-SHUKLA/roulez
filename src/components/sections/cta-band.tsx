@@ -5,7 +5,7 @@ import { useAppStore } from '@/lib/store';
 import { Reveal } from '@/components/motion/tilt';
 
 export default function CtaBand() {
-  const { setPage } = useAppStore();
+  const { setPage, setBuySellTab } = useAppStore();
   return (
     <section className="relative overflow-hidden bg-terra-700 py-20 md:py-24">
       <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -27,7 +27,7 @@ export default function CtaBand() {
         </div>
         <Reveal delay={0.12}>
           <button
-            onClick={() => setPage('buy-sell')}
+            onClick={() => { setBuySellTab('vendre'); setPage('buy-sell'); }}
             className="pressable flex items-center gap-2.5 rounded-[14px] bg-saffron-500 px-8 py-4 text-base font-bold text-ink transition-colors duration-200 hover:bg-saffron-300"
           >
             Vendre ma voiture

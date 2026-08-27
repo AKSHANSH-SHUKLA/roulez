@@ -55,7 +55,7 @@ export default function HeroSearch() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { setPage } = useAppStore();
+  const { setPage, setSaleFilters, setBuySellTab } = useAppStore();
   const { setFilters, setSearchResults } = useBookingStore();
 
   // Close dropdown on outside click
@@ -402,7 +402,14 @@ export default function HeroSearch() {
                   </select>
                 </div>
                 <button
-                  onClick={() => { useAppStore.getState().setSearchQuery(buyQuery); setPage('buy-sell'); }}
+                  onClick={() => {
+                    setSaleFilters({
+                      q: buyQuery.trim() || undefined,
+                      maxPrice: buyBudget ? Number(buyBudget) : undefined,
+                    });
+                    setBuySellTab('acheter');
+                    setPage('buy-sell');
+                  }}
                   className="pressable sm:col-span-2 flex w-full items-center justify-center gap-2.5 rounded-[12px] bg-petrol-600 px-6 py-4 text-base font-bold text-paper hover:bg-petrol-700"
                 >
                   <Search size={19} />
@@ -425,7 +432,7 @@ export default function HeroSearch() {
                   ))}
                 </ul>
                 <button
-                  onClick={() => setPage('buy-sell')}
+                  onClick={() => { setBuySellTab('vendre'); setPage('buy-sell'); }}
                   className="pressable flex w-full items-center justify-center gap-2.5 rounded-[12px] bg-saffron-500 px-6 py-4 text-base font-bold text-ink hover:bg-saffron-700 hover:text-paper"
                 >
                   <Tag size={19} />

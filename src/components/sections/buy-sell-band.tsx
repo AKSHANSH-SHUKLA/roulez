@@ -38,7 +38,7 @@ const panels = [
 ];
 
 export default function BuySellBand() {
-  const { setPage } = useAppStore();
+  const { setPage, setBuySellTab, setSaleFilters } = useAppStore();
 
   return (
     <section id="achat-vente" className="relative overflow-hidden bg-saffron-300 py-24 md:py-32">
@@ -74,7 +74,11 @@ export default function BuySellBand() {
                 </ul>
 
                 <button
-                  onClick={() => setPage('buy-sell')}
+                  onClick={() => {
+                    if (p.id === 'acheter') setSaleFilters({});
+                    setBuySellTab(p.id === 'vendre' ? 'vendre' : 'acheter');
+                    setPage('buy-sell');
+                  }}
                   className={`pressable mt-9 flex w-fit items-center gap-2 rounded-[12px] px-6 py-3.5 text-[15px] font-bold transition-colors duration-200 ${p.accent}`}
                 >
                   {p.cta}
