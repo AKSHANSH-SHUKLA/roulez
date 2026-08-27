@@ -1,9 +1,15 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, Settings2, Fuel, Users, DoorOpen, Briefcase, Wind, Star, CheckCircle2, ShieldCheck, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import {
+  ArrowLeft, Settings2, Fuel, Users, DoorOpen, Briefcase, Wind,
+  CheckCircle2, ShieldCheck, Loader2, AlertCircle, Clock3,
+} from 'lucide-react';
 import { useAppStore, useAuthStore, useBookingStore } from '@/lib/store';
-import type { RentalCar, InsurancePlan } from '@/lib/types';
+import { termsFor, quoteFor, euro } from '@/lib/rental-terms';
+import { checkRentalDuration, formatDuration, DURATION_HINT, isoDatePlus } from '@/lib/rental-rules';
+import { RatingStars, CancellationBadge, TermsTable } from '@/components/ui/terms';
+import type { InsurancePlan, Booking } from '@/lib/types';
 
 const categoryLabels: Record<string, string> = {
   economy: 'Economique',
@@ -12,15 +18,6 @@ const categoryLabels: Record<string, string> = {
   luxury: 'Luxe',
   van: 'Utilitaire',
   electric: 'Electrique',
-};
-
-const categoryBadgeColors: Record<string, string> = {
-  economy: 'bg-blue-100 text-blue-700',
-  compact: 'bg-emerald-100 text-emerald-700',
-  suv: 'bg-orange-100 text-orange-700',
-  luxury: 'bg-purple-100 text-purple-700',
-  van: 'bg-red-100 text-red-700',
-  electric: 'bg-teal-100 text-teal-700',
 };
 
 const fuelLabels: Record<string, string> = {
@@ -37,21 +34,20 @@ const transmissionLabels: Record<string, string> = {
 
 export default function CarDetail() {
   const { selectedCar, setPage, showToast } = useAppStore();
-  const { user, token, setShowAuth } = useAuthStore();
-  const { setBookingDetails } = useBookingStore();
+  const { user, setShowAuth } = useAuthStore();
+  const { filters, setBookingDetails } = useBookingStore();
 
   const [insurancePlans, setInsurancePlans] = useState<InsurancePlan[]>([]);
-  const [selectedPlan, setSelectedPlan] = useState<string>('');
+  const [selectedPlan, setSelectedPlan] = useState('');
   const [loadingInsurance, setLoadingInsurance] = useState(true);
 
-  // Form state
   const [formName, setFormName] = useState('');
   const [formEmail, setFormEmail] = useState('');
   const [formPhone, setFormPhone] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState(filters.pickupDate || isoDatePlus(1));
+  const [endDate, setEndDate] = useState(filters.returnDate || isoDatePlus(4));
   const [submitting, setSubmitting] = useState(false);
-  const [confirmedBooking, setConfirmedBooking] = useState<any>(null);
+  const [confirmedBooking, setConfirmedBooking] = useState<Booking | null>(null);
 
   useEffect(() => {
     async function fetchInsurance() {
@@ -59,10 +55,8 @@ export default function CarDetail() {
         const res = await fetch('/api/insurance');
         if (res.ok) {
           const json = await res.json();
-          setInsurancePlans(json.data || []);
-          if (json.data?.length > 0) {
-            setSelectedPlan(json.data[0].id);
-          }
+          const list: InsurancePlan[] = Array.isArray(json) ? json : (json?.data ?? []);
+          setInsurancePlans(list);
         }
       } catch {
         // ignore
@@ -73,43 +67,32 @@ export default function CarDetail() {
     fetchInsurance();
   }, []);
 
-  const days = useMemo(() => {
-    if (!startDate || !endDate) return 0;
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const diff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
-    return diff > 0 ? diff : 0;
-  }, [startDate, endDate]);
-
+  const duration = checkRentalDuration(startDate, endDate);
   const selectedPlanData = insurancePlans.find((p) => p.id === selectedPlan);
-  const carPriceTotal = (selectedCar?.pricePerDay || 0) * days;
-  const insuranceTotal = (selectedPlanData?.dailyPrice || 0) * days;
-  const grandTotal = carPriceTotal + insuranceTotal;
 
   if (!selectedCar) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-16 text-center">
-        <p className="text-gray-500 text-lg mb-4 font-[Inter]">Aucune voiture selectionnee.</p>
-        <button
-          onClick={() => setPage('search')}
-          className="text-emerald-600 font-medium hover:underline font-[Inter]"
-        >
+      <div className="mx-auto max-w-3xl px-6 py-24 text-center">
+        <p className="text-lg text-ink-2">Aucune voiture selectionnee.</p>
+        <button onClick={() => setPage('search')} className="pressable mt-5 rounded-[10px] bg-petrol-600 px-5 py-2.5 text-sm font-bold text-paper">
           Retour a la recherche
         </button>
       </div>
     );
   }
 
+  const car = selectedCar;
+  const terms = termsFor(car);
+  const quote = quoteFor(car.pricePerDay, duration.ok ? duration.days : 0, selectedPlanData?.dailyPrice ?? 0);
+
   const handleBook = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!user) {
       setShowAuth(true);
       return;
     }
-
-    if (days === 0) {
-      showToast('Veuillez selectionner des dates valides');
+    if (!duration.ok) {
+      showToast(duration.error ?? 'Dates invalides');
       return;
     }
 
@@ -119,23 +102,23 @@ export default function CarDetail() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          carId: selectedCar.id,
-          pickupLocationId: selectedCar.locationId,
-          returnLocationId: selectedCar.locationId,
+          carId: car.id,
+          pickupLocationId: car.locationId,
+          returnLocationId: car.locationId,
           pickupDate: startDate,
           returnDate: endDate,
-          totalPrice: grandTotal,
+          totalPrice: quote.total,
           customerName: formName || user.name,
           customerEmail: formEmail || user.email,
           customerPhone: formPhone,
-          insurancePlanId: selectedPlan,
+          insurancePlanId: selectedPlan || undefined,
         }),
       });
       const json = await res.json();
       if (json.success) {
         setBookingDetails(json.data);
         setConfirmedBooking(json.data);
-        showToast(`Reservation confirmee ! Reference: ${json.data.reference}`);
+        showToast(`Reservation confirmee. Reference ${json.data.reference}`);
       }
     } catch {
       showToast('Erreur lors de la reservation');
@@ -144,236 +127,231 @@ export default function CarDetail() {
     }
   };
 
-  const car = selectedCar as RentalCar;
-  const badgeColor = categoryBadgeColors[car.category] || 'bg-gray-100 text-gray-700';
+  const field =
+    'w-full rounded-[10px] border border-ink/15 bg-paper px-3.5 py-3 text-base text-ink ' +
+    'placeholder:text-ink-2/50 focus:border-petrol-500 focus:outline-none transition-[border-color] duration-200';
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      {/* Back button */}
-      <button
-        onClick={() => setPage('search')}
-        className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors mb-6 font-[Inter]"
-      >
-        <ArrowLeft size={20} />
-        Retour aux resultats
-      </button>
+    <div className="bg-paper-2 pb-24">
+      <div className="mx-auto max-w-[1200px] px-6 pt-8 md:px-10">
+        <button
+          onClick={() => setPage('search')}
+          className="pressable mb-7 flex items-center gap-2 text-[15px] font-semibold text-ink-2 transition-colors duration-200 hover:text-petrol-600"
+        >
+          <ArrowLeft size={18} />
+          Retour aux resultats
+        </button>
 
-      <div className="grid lg:grid-cols-2 gap-8">
-        {/* Left: Image */}
-        <div>
-          <div className="relative rounded-xl overflow-hidden h-80">
-            <img
-              src={car.imageUrl}
-              alt={car.name}
-              className="w-full h-full object-cover"
-            />
-            <span className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-medium font-[Inter] ${badgeColor}`}>
+        <div className="grid gap-8 lg:grid-cols-2">
+          <div className="relative h-[22rem] overflow-hidden rounded-[20px] lg:h-full lg:min-h-[26rem]">
+            <img src={car.imageUrl} alt={car.name} className="h-full w-full object-cover" />
+            <span className="label-tight absolute left-4 top-4 rounded-full bg-paper/95 px-3 py-1 text-[10px] text-ink">
               {categoryLabels[car.category]}
             </span>
           </div>
-        </div>
 
-        {/* Right: Info */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 font-[Inter]">{car.name}</h1>
-          <p className="text-gray-500 mt-1 font-[Inter]">{car.supplierName}</p>
+          <div>
+            <h1 className="font-poster text-[clamp(2rem,4vw,3rem)] text-ink">{car.name}</h1>
+            <p className="mt-1 text-[15px] text-ink-2">ou similaire &middot; {car.supplierName}</p>
 
-          {/* Rating stars (demo) */}
-          <div className="flex items-center gap-1 mt-2">
-            {[1, 2, 3, 4, 5].map((s) => (
-              <Star
-                key={s}
-                size={16}
-                className={s <= 4 ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}
-              />
-            ))}
-            <span className="text-sm text-gray-500 ml-1 font-[Inter]">4.0</span>
-          </div>
+            <div className="mt-3 flex flex-wrap items-center gap-4">
+              <RatingStars rating={terms.rating} reviews={terms.reviews} />
+              <CancellationBadge terms={terms} />
+            </div>
 
-          {/* Specs grid */}
-          <div className="grid grid-cols-3 gap-3 mt-6">
-            {[
-              { icon: Settings2, label: 'Transmission', value: transmissionLabels[car.transmission] },
-              { icon: Fuel, label: 'Carburant', value: fuelLabels[car.fuel] },
-              { icon: Users, label: 'Places', value: String(car.seats) },
-              { icon: DoorOpen, label: 'Portes', value: String(car.doors) },
-              { icon: Briefcase, label: 'Bagages', value: String(car.bags) },
-              { icon: Wind, label: 'Climatisation', value: car.ac ? 'Oui' : 'Non' },
-            ].map((spec) => (
-              <div key={spec.label} className="bg-gray-50 rounded-lg p-3 text-center">
-                <spec.icon size={20} className="mx-auto text-gray-500 mb-1" />
-                <p className="text-xs text-gray-500 font-[Inter]">{spec.label}</p>
-                <p className="text-sm font-semibold text-gray-900 font-[Inter]">{spec.value}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Features */}
-          <div className="flex flex-wrap gap-2 mt-4">
-            {car.features.map((f) => (
-              <span
-                key={f}
-                className="bg-emerald-50 text-emerald-700 text-xs px-3 py-1 rounded-full font-medium font-[Inter]"
-              >
-                {f}
-              </span>
-            ))}
-          </div>
-
-          {/* Price */}
-          <div className="mt-6">
-            <span className="text-3xl font-bold text-emerald-600 font-[Inter]">{car.pricePerDay} EUR</span>
-            <span className="text-gray-500 font-[Inter]"> /jour</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Confirmation section */}
-      {confirmedBooking && (
-        <div className="mt-8 bg-emerald-50 border border-emerald-200 rounded-xl p-6">
-          <div className="flex items-center gap-3 mb-3">
-            <CheckCircle2 size={24} className="text-emerald-600" />
-            <h3 className="text-lg font-bold text-emerald-800 font-[Inter]">Reservation confirmee</h3>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-4 text-sm font-[Inter]">
-            <div><span className="text-gray-500">Reference :</span> <span className="font-semibold text-gray-900">{confirmedBooking.reference}</span></div>
-            <div><span className="text-gray-500">Statut :</span> <span className="font-semibold text-emerald-700">{confirmedBooking.status === 'confirmed' ? 'Confirmee' : confirmedBooking.status}</span></div>
-            <div><span className="text-gray-500">Voiture :</span> <span className="font-semibold text-gray-900">{car.name}</span></div>
-            <div><span className="text-gray-500">Total :</span> <span className="font-semibold text-gray-900">{confirmedBooking.totalPrice} EUR</span></div>
-          </div>
-        </div>
-      )}
-
-      {/* Insurance section */}
-      <div className="mt-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-4 font-[Inter]">Choisissez votre assurance</h2>
-        {loadingInsurance ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 size={24} className="animate-spin text-emerald-600" />
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-3 gap-4">
-            {insurancePlans.map((plan) => (
-              <label
-                key={plan.id}
-                className={`cursor-pointer rounded-xl border-2 p-4 transition-colors ${
-                  selectedPlan === plan.id
-                    ? 'border-emerald-600 bg-emerald-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <input
-                    type="radio"
-                    name="insurance"
-                    checked={selectedPlan === plan.id}
-                    onChange={() => setSelectedPlan(plan.id)}
-                    className="text-emerald-600 focus:ring-emerald-500"
-                  />
-                  <div>
-                    <p className="font-semibold text-gray-900 font-[Inter]">{plan.name}</p>
-                    <p className="text-xs text-gray-500 font-[Inter]">{plan.description}</p>
-                  </div>
+            <div className="mt-6 grid grid-cols-3 gap-3">
+              {[
+                { icon: Settings2, label: 'Transmission', value: transmissionLabels[car.transmission] },
+                { icon: Fuel, label: 'Carburant', value: fuelLabels[car.fuel] },
+                { icon: Users, label: 'Places', value: String(car.seats) },
+                { icon: DoorOpen, label: 'Portes', value: String(car.doors) },
+                { icon: Briefcase, label: 'Bagages', value: String(car.bags) },
+                { icon: Wind, label: 'Climatisation', value: car.ac ? 'Oui' : 'Non' },
+              ].map((spec) => (
+                <div key={spec.label} className="rounded-[12px] bg-paper p-3 text-center">
+                  <spec.icon size={18} className="mx-auto mb-1 text-petrol-500" />
+                  <p className="text-[11px] text-ink-2">{spec.label}</p>
+                  <p className="text-[14px] font-bold text-ink">{spec.value}</p>
                 </div>
-                <p className="text-lg font-bold text-emerald-600 mb-2 font-[Inter]">{plan.dailyPrice} EUR/jour</p>
-                <ul className="space-y-1">
-                  {plan.coverage.map((c) => (
-                    <li key={c} className="flex items-start gap-1.5 text-xs text-gray-600 font-[Inter]">
-                      <ShieldCheck size={14} className="text-emerald-500 shrink-0 mt-0.5" />
-                      {c}
-                    </li>
-                  ))}
-                </ul>
-              </label>
-            ))}
+              ))}
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {car.features.map((f) => (
+                <span key={f} className="rounded-full bg-petrol-50 px-3 py-1 text-[12px] font-semibold text-petrol-700">{f}</span>
+              ))}
+            </div>
+
+            <div className="mt-6 rounded-[16px] bg-petrol-700 p-5 text-paper">
+              <p className="label-tight text-[11px] text-saffron-300">Prix total</p>
+              <p className="nums mt-1 font-poster text-4xl">
+                {duration.ok ? euro(quote.total) : `${euro(car.pricePerDay)}/jour`}
+              </p>
+              <p className="nums mt-1 text-[14px] text-petrol-100">
+                {duration.ok
+                  ? `${formatDuration(duration.days)} · ${euro(car.pricePerDay)}/jour${selectedPlanData ? ` · assurance ${selectedPlanData.name} incluse` : ''}`
+                  : DURATION_HINT}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Conditions de location */}
+        <section className="mt-14">
+          <h2 className="font-poster text-[clamp(1.6rem,3vw,2.3rem)] text-ink">Conditions de location</h2>
+          <p className="mt-2 max-w-[62ch] text-[15px] leading-relaxed text-ink-2">
+            Tout ce qui coute de l argent en plus du tarif, affiche avant la reservation et pas au comptoir.
+          </p>
+          <div className="mt-6">
+            <TermsTable terms={terms} />
+          </div>
+        </section>
+
+        {confirmedBooking && (
+          <div className="mt-10 rounded-[20px] border border-petrol-500 bg-petrol-50 p-6">
+            <div className="flex items-center gap-3">
+              <CheckCircle2 size={22} className="text-petrol-600" />
+              <h2 className="font-poster-md text-xl text-petrol-700">Reservation confirmee</h2>
+            </div>
+            <dl className="mt-4 grid gap-3 text-[15px] sm:grid-cols-2">
+              <div><dt className="inline text-ink-2">Reference : </dt><dd className="nums inline font-bold text-ink">{confirmedBooking.reference}</dd></div>
+              <div><dt className="inline text-ink-2">Voiture : </dt><dd className="inline font-bold text-ink">{car.name}</dd></div>
+              <div><dt className="inline text-ink-2">Duree : </dt><dd className="nums inline font-bold text-ink">{formatDuration(duration.days)}</dd></div>
+              <div><dt className="inline text-ink-2">Total : </dt><dd className="nums inline font-bold text-ink">{euro(confirmedBooking.totalPrice)}</dd></div>
+            </dl>
           </div>
         )}
-      </div>
 
-      {/* Booking form */}
-      <div className="mt-8 bg-gray-50 p-6 rounded-xl">
-        <h2 className="text-xl font-bold text-gray-900 mb-4 font-[Inter]">Reserver ce vehicule</h2>
-        <form onSubmit={handleBook} className="space-y-4">
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1 font-[Inter]">Nom complet</label>
-              <input
-                type="text"
-                value={formName}
-                onChange={(e) => setFormName(e.target.value)}
-                placeholder={user?.name || 'Votre nom'}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-[Inter]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1 font-[Inter]">Email</label>
-              <input
-                type="email"
-                value={formEmail}
-                onChange={(e) => setFormEmail(e.target.value)}
-                placeholder={user?.email || 'votre@email.com'}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-[Inter]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1 font-[Inter]">Telephone</label>
-              <input
-                type="tel"
-                value={formPhone}
-                onChange={(e) => setFormPhone(e.target.value)}
-                placeholder="+33 6 XX XX XX XX"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-[Inter]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1 font-[Inter]">Date de debut</label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-[Inter]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1 font-[Inter]">Date de fin</label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-[Inter]"
-              />
-            </div>
+        {/* Assurance en option */}
+        <section className="mt-14">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h2 className="font-poster text-[clamp(1.6rem,3vw,2.3rem)] text-ink">Reduire la franchise</h2>
+            <button onClick={() => setPage('insurance')} className="text-[14px] font-bold text-petrol-600 underline underline-offset-4 hover:text-petrol-700">
+              Comprendre l assurance
+            </button>
           </div>
+          <p className="mt-2 max-w-[62ch] text-[15px] leading-relaxed text-ink-2">
+            Sans option, {euro(terms.excess)} restent a votre charge en cas de dommage. L assurance est
+            facultative : vous pouvez reserver sans.
+          </p>
 
-          {/* Price summary */}
-          {days > 0 && (
-            <div className="bg-white rounded-lg p-4 space-y-2 font-[Inter]">
-              <div className="flex justify-between text-sm text-gray-600">
-                <span>{car.name} x {days} jour{days > 1 ? 's' : ''}</span>
-                <span>{carPriceTotal} EUR</span>
-              </div>
-              {selectedPlanData && (
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Assurance {selectedPlanData.name} x {days} jour{days > 1 ? 's' : ''}</span>
-                  <span>{insuranceTotal} EUR</span>
-                </div>
-              )}
-              <div className="flex justify-between text-base font-bold text-gray-900 border-t pt-2">
-                <span>Total</span>
-                <span className="text-emerald-600">{grandTotal} EUR</span>
-              </div>
+          {loadingInsurance ? (
+            <div className="flex justify-center py-10"><Loader2 size={22} className="animate-spin text-petrol-500" /></div>
+          ) : (
+            <div className="mt-6 grid gap-4 md:grid-cols-4">
+              <label className={`cursor-pointer rounded-[16px] border-2 p-4 transition-colors duration-200 ${selectedPlan === '' ? 'border-petrol-600 bg-petrol-50' : 'border-ink/12 bg-paper hover:border-ink/25'}`}>
+                <span className="flex items-center gap-2">
+                  <input type="radio" name="insurance" checked={selectedPlan === ''} onChange={() => setSelectedPlan('')} className="text-petrol-600 focus:ring-petrol-500" />
+                  <span className="font-bold text-ink">Sans assurance</span>
+                </span>
+                <span className="nums mt-2 block font-poster-md text-lg text-petrol-600">0 EUR</span>
+                <span className="mt-2 block text-[13px] leading-relaxed text-ink-2">
+                  Franchise de {euro(terms.excess)} a votre charge.
+                </span>
+              </label>
+
+              {insurancePlans.map((plan) => (
+                <label
+                  key={plan.id}
+                  className={`cursor-pointer rounded-[16px] border-2 p-4 transition-colors duration-200 ${selectedPlan === plan.id ? 'border-petrol-600 bg-petrol-50' : 'border-ink/12 bg-paper hover:border-ink/25'}`}
+                >
+                  <span className="flex items-center gap-2">
+                    <input type="radio" name="insurance" checked={selectedPlan === plan.id} onChange={() => setSelectedPlan(plan.id)} className="text-petrol-600 focus:ring-petrol-500" />
+                    <span>
+                      <span className="block font-bold text-ink">{plan.name}</span>
+                      <span className="block text-[12px] text-ink-2">{plan.description}</span>
+                    </span>
+                  </span>
+                  <span className="nums mt-2 block font-poster-md text-lg text-petrol-600">{plan.dailyPrice} EUR/jour</span>
+                  <ul className="mt-2 space-y-1">
+                    {plan.coverage.map((c) => (
+                      <li key={c} className="flex items-start gap-1.5 text-[12px] text-ink-2">
+                        <ShieldCheck size={13} className="mt-0.5 shrink-0 text-petrol-500" />{c}
+                      </li>
+                    ))}
+                  </ul>
+                </label>
+              ))}
             </div>
           )}
+        </section>
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full py-3 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 font-[Inter]"
-          >
-            {submitting && <Loader2 size={18} className="animate-spin" />}
-            Reserver Maintenant
-          </button>
-        </form>
+        {/* Reservation */}
+        <section className="mt-14 rounded-[20px] bg-paper p-6 md:p-8">
+          <h2 className="font-poster text-[clamp(1.6rem,3vw,2.3rem)] text-ink">Reserver ce vehicule</h2>
+          <p className="mt-2 flex items-center gap-2 text-[14px] text-ink-2">
+            <Clock3 size={15} className="text-petrol-500" />
+            {DURATION_HINT}
+          </p>
+
+          <form onSubmit={handleBook} className="mt-6 space-y-5">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label htmlFor="nom" className="label-tight mb-2 block text-[11px] text-ink-2">Nom complet</label>
+                <input id="nom" type="text" value={formName} onChange={(e) => setFormName(e.target.value)} placeholder={user?.name || 'Votre nom'} className={field} />
+              </div>
+              <div>
+                <label htmlFor="mail" className="label-tight mb-2 block text-[11px] text-ink-2">Email</label>
+                <input id="mail" type="email" value={formEmail} onChange={(e) => setFormEmail(e.target.value)} placeholder={user?.email || 'vous@exemple.fr'} className={field} />
+              </div>
+              <div>
+                <label htmlFor="tel" className="label-tight mb-2 block text-[11px] text-ink-2">Telephone</label>
+                <input id="tel" type="tel" value={formPhone} onChange={(e) => setFormPhone(e.target.value)} placeholder="+33 6 XX XX XX XX" className={field} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="d1" className="label-tight mb-2 block text-[11px] text-ink-2">Depart</label>
+                  <input id="d1" type="date" value={startDate} min={isoDatePlus(0)} onChange={(e) => setStartDate(e.target.value)} className={field} />
+                </div>
+                <div>
+                  <label htmlFor="d2" className="label-tight mb-2 block text-[11px] text-ink-2">Retour</label>
+                  <input id="d2" type="date" value={endDate} min={startDate} onChange={(e) => setEndDate(e.target.value)} className={field} />
+                </div>
+              </div>
+            </div>
+
+            {!duration.ok && duration.error && (
+              <p role="alert" className="flex items-start gap-2 rounded-[10px] bg-terra-300/35 px-3.5 py-3 text-[14px] font-semibold text-terra-700">
+                <AlertCircle size={16} className="mt-0.5 shrink-0" />
+                {duration.error}
+              </p>
+            )}
+
+            {duration.ok && (
+              <div className="rounded-[16px] bg-paper-2 p-5">
+                <dl className="space-y-2 text-[15px]">
+                  <div className="flex justify-between text-ink-2">
+                    <dt>{car.name} &times; {formatDuration(duration.days)}</dt>
+                    <dd className="nums">{euro(quote.carTotal)}</dd>
+                  </div>
+                  {selectedPlanData && (
+                    <div className="flex justify-between text-ink-2">
+                      <dt>Assurance {selectedPlanData.name} &times; {formatDuration(duration.days)}</dt>
+                      <dd className="nums">{euro(quote.insuranceTotal)}</dd>
+                    </div>
+                  )}
+                  <div className="flex justify-between border-t border-ink/12 pt-2.5 text-lg font-bold text-ink">
+                    <dt>Total a payer</dt>
+                    <dd className="nums text-petrol-600">{euro(quote.total)}</dd>
+                  </div>
+                </dl>
+                <p className="mt-3 border-t border-ink/12 pt-3 text-[13px] leading-relaxed text-ink-2">
+                  Caution de {euro(terms.deposit)} bloquee au comptoir puis liberee au retour.
+                  Elle ne fait pas partie du total ci-dessus.
+                </p>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting || !duration.ok}
+              className="pressable flex w-full items-center justify-center gap-2 rounded-[12px] bg-petrol-600 px-6 py-4 text-base font-bold text-paper transition-colors duration-200 hover:bg-petrol-700 disabled:cursor-not-allowed disabled:opacity-55"
+            >
+              {submitting && <Loader2 size={18} className="animate-spin" />}
+              Reserver maintenant
+            </button>
+          </form>
+        </section>
       </div>
     </div>
   );

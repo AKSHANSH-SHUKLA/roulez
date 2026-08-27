@@ -15,6 +15,9 @@ import CarDetail from '@/components/sections/car-detail';
 import BuySell from '@/components/sections/buy-sell';
 import ListingDetail from '@/components/sections/listing-detail';
 import AuthModal from '@/components/sections/auth-modal';
+import BuySellBand from '@/components/sections/buy-sell-band';
+import InsuranceBand from '@/components/sections/insurance-band';
+import InsurancePage from '@/components/sections/insurance-page';
 
 export default function Page() {
   const { currentPage, toast } = useAppStore();
@@ -31,6 +34,8 @@ export default function Page() {
             <PopularDestinations />
             <HowItWorks />
             <FeaturedCars />
+            <BuySellBand />
+            <InsuranceBand />
             <Testimonials />
             <CtaBand />
             <Footer />
@@ -60,6 +65,14 @@ export default function Page() {
             <Footer />
           </>
         );
+      case 'insurance':
+        return (
+          <>
+            <Navbar />
+            <InsurancePage />
+            <Footer />
+          </>
+        );
       case 'listing-detail':
         return (
           <>
@@ -77,6 +90,8 @@ export default function Page() {
             <PopularDestinations />
             <HowItWorks />
             <FeaturedCars />
+            <BuySellBand />
+            <InsuranceBand />
             <Testimonials />
             <CtaBand />
             <Footer />
@@ -94,7 +109,7 @@ export default function Page() {
 
       {/* Toast notification */}
       {toast && (
-        <div className='fixed bottom-6 right-6 z-[60] bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg text-sm font-medium animate-[fadeIn_0.3s_ease-out] font-[Inter]'>
+        <div className='fixed bottom-6 right-6 z-[60] rounded-[12px] bg-ink px-6 py-3.5 text-sm font-bold text-paper shadow-[0_18px_40px_-18px_rgba(20,35,28,0.8)]'>
           {toast}
         </div>
       )}

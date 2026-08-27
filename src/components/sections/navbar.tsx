@@ -8,6 +8,7 @@ const links = [
   { label: 'Accueil', page: 'home' },
   { label: 'Location', page: 'search' },
   { label: 'Achat & Vente', page: 'buy-sell' },
+  { label: 'Assurance', page: 'insurance' },
 ];
 
 export default function Navbar() {
