@@ -79,9 +79,9 @@ export const en: Dict = {
       cta: 'Post my listing',
     },
     photoAlt: {
-      nice: 'The Baie des Anges in Nice',
-      paris: 'Paris seen from the 7th arrondissement',
-      marseille: 'The Old Port of Marseille',
+      sedan: 'A Mercedes C-Class saloon',
+      suv: 'A Range Rover Evoque SUV',
+      electric: 'An electric Tesla Model 3',
     },
   },
 

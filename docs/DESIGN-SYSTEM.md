@@ -57,25 +57,34 @@ a 15 ou 16px, jamais en dessous de 12px pour une information lisible.
 
 ## 4. Rythme des couleurs sur l'accueil
 
-Regle : **jamais deux sections de suite dans la meme famille de couleur**, et on
-alterne sombre et clair. La page a longtemps alterne vert et creme uniquement,
-ce qui la faisait paraitre monotone alors que la palette compte six teintes.
+La palette compte six teintes, mais **l'accueil n'en emploie que deux** : le
+vert petrol et l'encre, sur papier. Le safran ne sert que d'accent, jamais de
+fond. Terra et azur restent disponibles pour la page assurance et les etats
+d'erreur, mais ne couvrent aucune section de l'accueil.
+
+Regle : **jamais deux sections voisines dans la meme famille**, et l'alternance
+sombre / clair est conservee.
 
 | # | Section | Fond |
 | --- | --- | --- |
-| 1 | Hero | `petrol-700` — vert profond |
-| 2 | Bandeau loueurs | `saffron-500` — jaune |
-| 3 | Destinations | `paper` — creme |
-| 4 | Comment ca marche | `terra-500` — terracotta |
-| 5 | Vehicules populaires | `paper-2` — creme chaud |
-| 6 | Achat & Vente | `saffron-300` — jaune doux |
-| 7 | Assurance | `azure-700` — bleu |
-| 8 | Temoignages | `paper` — creme, cartes teintees jaune/bleu/terracotta |
-| 9 | Appel a l'action | `terra-700` — rouille profonde |
-| 10 | Pied de page | `ink` — presque noir |
+| 1 | Hero | `petrol-900` — vert profond |
+| 2 | Bandeau loueurs | `paper-2` — filet en haut et en bas |
+| 3 | Destinations | `paper` |
+| 4 | Comment ca marche | `ink` — chiffres en `saffron-300` |
+| 5 | Vehicules populaires | `paper-2` |
+| 6 | Achat & Vente | `paper` — panneaux `paper-2` et `ink` |
+| 7 | Assurance | `petrol-700` |
+| 8 | Temoignages | `paper-2` — cartes `paper` a filet |
+| 9 | Appel a l'action | `paper` — bouton `ink` |
+| 10 | Pied de page | `ink` |
 
-Ajouter une section = choisir un fond qui ne repete pas celui de ses voisins, et
-mettre a jour ce tableau.
+Le safran apparait a quatre endroits seulement : le disque du heros
+(`saffron-700` a 55 %, un or ancien et non un orange), les chiffres des trois
+etapes, les titres de colonnes du pied de page, et les etoiles des
+temoignages. Un aplat safran vif est desormais un defaut.
+
+Ajouter une section = choisir sa place dans la sequence, pas seulement son
+contenu.
 
 ## 5. Motion
 
@@ -92,6 +101,10 @@ Reglages dans `globals.css` et `components/motion/tilt.tsx`.
   deplacements. Toute nouvelle animation doit y etre couverte dans le meme
   commit, pas dans une passe ulterieure.
 - Seules `transform` et `opacity` sont animees. Pas de `transition: all`.
+
+Photos du heros : trois vehicules, pas trois cartes postales — une berline, un
+SUV, une electrique. La pile raconte l'etendue du catalogue plutot que la
+destination, ce qui est le sujet du produit.
 
 Parallaxe du heros : les valeurs doivent etre grandes pour se voir. Une premiere
 version deplacait le soleil de 120px sur 700px de defilement, et personne ne

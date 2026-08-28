@@ -70,8 +70,6 @@ export default function FeaturedCars() {
 
   return (
     <section className="relative overflow-hidden bg-paper-2 py-24 md:py-32">
-      <div aria-hidden className="pointer-events-none absolute right-0 top-0 h-full w-2 bg-saffron-500" />
-
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-6">

@@ -16,8 +16,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12">
           <div className="md:col-span-4">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-saffron-500">
-                <Car size={19} className="text-ink" />
+              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-petrol-600">
+                <Car size={19} className="text-paper" />
               </span>
               <span className="font-poster text-xl">Roulez</span>
             </div>
@@ -28,7 +28,7 @@ export default function Footer() {
 
           {columns.map((col) => (
             <div key={col.title} className="md:col-span-3">
-              <h3 className="label-tight text-[11px] text-saffron-500">{col.title}</h3>
+              <h3 className="label-tight text-[11px] text-saffron-300">{col.title}</h3>
               <ul className="mt-5 space-y-3">
                 {col.items.map((item) => (
                   <li key={item}>
@@ -42,7 +42,7 @@ export default function Footer() {
           ))}
 
           <div className="md:col-span-2">
-            <h3 className="label-tight text-[11px] text-saffron-500">{d.footer.infoCol}</h3>
+            <h3 className="label-tight text-[11px] text-saffron-300">{d.footer.infoCol}</h3>
             <ul className="mt-5 space-y-3">
               {[
                 { label: d.footer.contact, href: '#' },

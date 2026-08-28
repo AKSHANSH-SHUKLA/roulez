@@ -186,14 +186,13 @@ export default function HeroSearch() {
   const head = headlines[mode];
 
   return (
-    <section className="relative overflow-hidden bg-petrol-700">
+    <section className="relative overflow-hidden bg-petrol-900">
       {/* poster field: hard-edged shapes, no blurred blobs */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <motion.div style={calm ? undefined : { y: fieldY }} className="absolute inset-0">
-          <div className="absolute -left-40 -top-32 h-[34rem] w-[34rem] rounded-full bg-petrol-600" />
-          <div className="absolute -bottom-56 left-1/4 h-[40rem] w-[40rem] rounded-full bg-petrol-900/70" />
+          <div className="absolute -left-48 -top-40 h-[36rem] w-[36rem] rounded-full bg-petrol-700/55" />
         </motion.div>
-        <div className="absolute right-0 top-0 h-full w-[38%] bg-petrol-600/45" />
+        <div className="absolute right-0 top-0 h-full w-[38%] bg-petrol-700/35" />
         <svg className="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden>
           <path d="M0 120V64c220 34 420 34 620 0S1180 8 1440 52v68z" fill="#faf5ec" />
         </svg>
@@ -215,7 +214,7 @@ export default function HeroSearch() {
             initial={{ opacity: 0, transform: 'translate3d(0,28px,0)' }}
             animate={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
             transition={{ duration: 0.75, delay: 0.16, ease: [0.23, 1, 0.32, 1] }}
-            className="mt-10 max-w-2xl rounded-[20px] bg-paper p-5 shadow-[0_24px_60px_-24px_rgba(7,47,39,0.75)] md:p-6"
+            className="mt-10 max-w-2xl rounded-[20px] bg-paper p-5 shadow-[0_30px_70px_-30px_rgba(4,24,20,0.85)] md:p-6"
           >
             {/* mode: louer / acheter / vendre */}
             <div role="tablist" aria-label="Que voulez-vous faire" className="mb-5 flex gap-1 rounded-[12px] bg-petrol-50 p-1">
@@ -358,7 +357,7 @@ export default function HeroSearch() {
                     <button
                       key={city}
                       onClick={() => handlePopularCity(city)}
-                      className="pressable rounded-full bg-petrol-50 px-3.5 py-1.5 text-sm font-semibold text-petrol-700 transition-colors duration-200 hover:bg-saffron-300 hover:text-ink"
+                      className="pressable rounded-full bg-petrol-50 px-3.5 py-1.5 text-sm font-semibold text-petrol-700 transition-colors duration-200 hover:bg-petrol-600 hover:text-paper"
                     >
                       {city}
                     </button>
@@ -424,7 +423,7 @@ export default function HeroSearch() {
                 </ul>
                 <button
                   onClick={() => { setBuySellTab('vendre'); setPage('buy-sell'); }}
-                  className="pressable flex w-full items-center justify-center gap-2.5 rounded-[12px] bg-saffron-500 px-6 py-4 text-base font-bold text-ink hover:bg-saffron-700 hover:text-paper"
+                  className="pressable flex w-full items-center justify-center gap-2.5 rounded-[12px] bg-petrol-600 px-6 py-4 text-base font-bold text-paper hover:bg-petrol-700"
                 >
                   <Tag size={19} />
                   {d.hero.sellForm.cta}
@@ -434,9 +433,9 @@ export default function HeroSearch() {
           </motion.div>
 
           <ul className="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-[15px] text-petrol-100">
-            <li className="flex items-center gap-2"><ShieldCheck size={17} className="text-saffron-300" />{d.hero.trust.insurance}</li>
-            <li className="flex items-center gap-2"><Ban size={17} className="text-saffron-300" />{d.hero.trust.cancellation}</li>
-            <li className="flex items-center gap-2"><Clock3 size={17} className="text-saffron-300" />{d.hero.trust.support}</li>
+            <li className="flex items-center gap-2"><ShieldCheck size={17} className="text-petrol-300" />{d.hero.trust.insurance}</li>
+            <li className="flex items-center gap-2"><Ban size={17} className="text-petrol-300" />{d.hero.trust.cancellation}</li>
+            <li className="flex items-center gap-2"><Clock3 size={17} className="text-petrol-300" />{d.hero.trust.support}</li>
           </ul>
         </motion.div>
 
@@ -445,19 +444,19 @@ export default function HeroSearch() {
           <motion.div
             aria-hidden
             style={calm ? undefined : { y: sunY, scale: sunScale }}
-            className="absolute -right-4 -top-32 h-[24rem] w-[24rem] rounded-full bg-saffron-500"
+            className="absolute -right-4 -top-32 h-[24rem] w-[24rem] rounded-full bg-saffron-700/55"
           />
           <motion.div style={calm ? undefined : { y: stackY }} className="stage-far relative">
             <Tilt max={11} scale={1.015} className="[transform-style:preserve-3d]">
               <div className="relative h-[30rem] w-full">
-                <div className="absolute right-6 top-0 h-64 w-[19rem] overflow-hidden rounded-[20px] shadow-[0_30px_60px_-24px_rgba(7,47,39,0.8)] [transform:translateZ(70px)]">
-                  <img src="/destinations/nice.jpg" alt={d.hero.photoAlt.nice} className="h-full w-full object-cover" />
+                <div className="absolute right-6 top-0 h-64 w-[19rem] overflow-hidden rounded-[20px] shadow-[0_28px_64px_-26px_rgba(4,24,20,0.9)] [transform:translateZ(70px)]">
+                  <img src="/cars/mercedes-classe-c.jpg" alt={d.hero.photoAlt.sedan} className="h-full w-full object-cover" />
                 </div>
-                <div className="absolute left-0 top-40 h-60 w-[17rem] overflow-hidden rounded-[20px] shadow-[0_30px_60px_-24px_rgba(7,47,39,0.85)] [transform:translateZ(120px)]">
-                  <img src="/destinations/paris.jpg" alt={d.hero.photoAlt.paris} className="h-full w-full object-cover" />
+                <div className="absolute left-0 top-40 h-60 w-[17rem] overflow-hidden rounded-[20px] shadow-[0_28px_64px_-26px_rgba(4,24,20,0.92)] [transform:translateZ(120px)]">
+                  <img src="/cars/range-rover-evoque.jpg" alt={d.hero.photoAlt.suv} className="h-full w-full object-cover" />
                 </div>
-                <div className="absolute bottom-0 right-2 h-52 w-[15rem] overflow-hidden rounded-[20px] shadow-[0_24px_50px_-20px_rgba(7,47,39,0.8)] [transform:translateZ(30px)]">
-                  <img src="/destinations/marseille.jpg" alt={d.hero.photoAlt.marseille} className="h-full w-full object-cover" />
+                <div className="absolute bottom-0 right-2 h-52 w-[15rem] overflow-hidden rounded-[20px] shadow-[0_24px_56px_-24px_rgba(4,24,20,0.88)] [transform:translateZ(30px)]">
+                  <img src="/cars/tesla-model-3.jpg" alt={d.hero.photoAlt.electric} className="h-full w-full object-cover" />
                 </div>
               </div>
             </Tilt>

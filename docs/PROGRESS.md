@@ -90,3 +90,4 @@ l'immatriculation Atout France (voir `docs/PRD.md`, section 6).
 | 2026-08-27 | Couverture de toute la France (485 lieux), flotte et prix par lieu, rythme de couleurs de l'accueil, parallaxe du heros rendue visible |
 | 2026-08-27 | Recherche d'annonces par marque et budget, depot d'annonce avec photos et obligations legales francaises (ADR-010), refonte de la fiche annonce |
 | 2026-08-27 | Site bilingue francais / anglais (ADR-011), fenetre de connexion et page credits reprises a la nouvelle charte |
+| 2026-08-28 | Palette de l'accueil ramenee a deux teintes (ADR-012), photos du heros remplacees par des vehicules |

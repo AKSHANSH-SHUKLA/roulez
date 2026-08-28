@@ -58,7 +58,7 @@ export default function Navbar() {
               >
                 {l.label}
                 {currentPage === l.page && (
-                  <span className="absolute inset-x-4 -bottom-0.5 h-[3px] rounded-full bg-saffron-500" />
+                  <span className="absolute inset-x-4 -bottom-0.5 h-[2px] rounded-full bg-petrol-600" />
                 )}
               </button>
             </li>

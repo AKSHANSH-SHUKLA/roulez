@@ -232,3 +232,32 @@ locations de vacances en France est reservee par des visiteurs etrangers.
 **Non retenu.** Router par URL (`/fr/...`, `/en/...`) avec `next-intl`. C'est la
 bonne cible, mais elle suppose d'abord la migration vers de vraies URL
 (ADR-001) ; faire les deux en meme temps aurait double le risque.
+
+---
+
+## ADR-012 — Deux teintes sur l'accueil, pas six
+
+**Date** : 2026-08-28 · **Statut** : accepte
+
+**Contexte.** ADR-009 avait reparti six teintes sur dix sections pour casser la
+monotonie vert / creme. Le probleme s'est inverse : safran vif, terracotta et
+azur en aplats pleins donnaient une page bruyante la ou le produit doit inspirer
+confiance sur des sommes d'argent.
+
+**Decision.** L'accueil n'emploie plus que le vert petrol et l'encre sur papier.
+Le safran devient un accent ponctuel et n'est jamais un fond. Terra et azur
+quittent l'accueil ; ils restent definis pour la page assurance et les etats
+d'erreur.
+
+Egalement retire : la barre safran de 2px sur la section vehicules, qui etait un
+bord colore epais sur une carte — un des reperes les plus surs d'une interface
+non dessinee.
+
+**Consequence.** Moins d'occasions de se tromper, et une page qui ressemble a un
+service financier plutot qu'a une brochure. Le cout est une page moins
+immediatement gaie ; c'est le bon echange pour un produit ou l'utilisateur
+compare des cautions de 2 500 EUR.
+
+**Photos du heros.** Les trois cartes postales de villes sont remplacees par
+trois vehicules — berline, SUV, electrique. Le sujet du produit est la voiture,
+pas la destination.

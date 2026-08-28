@@ -83,9 +83,9 @@ export const fr = {
       cta: 'Deposer mon annonce',
     },
     photoAlt: {
-      nice: 'La baie des Anges a Nice',
-      paris: 'Paris depuis le 7e arrondissement',
-      marseille: 'Le Vieux-Port de Marseille',
+      sedan: 'Une berline Mercedes Classe C',
+      suv: 'Un SUV Range Rover Evoque',
+      electric: 'Une Tesla Model 3 electrique',
     },
   },
 

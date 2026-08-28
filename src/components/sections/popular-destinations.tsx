@@ -135,10 +135,10 @@ export default function PopularDestinations() {
                         </p>
                         <div className="mt-4 flex items-center justify-between border-t border-paper/25 pt-3.5">
                           <span className="flex items-center gap-1.5 text-[13px] text-paper/85">
-                            <Car size={14} className="text-saffron-300" />
+                            <Car size={14} className="text-paper/70" />
                             <span className="nums">{f.number(dest.carCount)}</span> {d.destinations.cars}
                           </span>
-                          <span className="nums flex items-center gap-1.5 text-[13px] font-bold text-saffron-300">
+                          <span className="nums flex items-center gap-1.5 text-[13px] font-bold text-paper">
                             {fmt(d.destinations.from, { price: f.euro(dest.startingPrice) })}
                             <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
                           </span>

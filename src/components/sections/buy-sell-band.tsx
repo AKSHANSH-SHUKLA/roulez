@@ -15,8 +15,8 @@ export default function BuySellBand() {
       kicker: '01',
       ...d.buySellBand.buy,
       icons: [Gauge, FileText, Users],
-      tone: 'bg-paper text-ink',
-      accentText: 'text-terra-500',
+      tone: 'bg-paper-2 text-ink',
+      accentText: 'text-petrol-600',
       accent: 'bg-petrol-600 text-paper hover:bg-petrol-700',
     },
     {
@@ -25,14 +25,14 @@ export default function BuySellBand() {
       ...d.buySellBand.sell,
       icons: [Tag, Users, FileText],
       tone: 'bg-ink text-paper',
-      accentText: 'text-saffron-500',
-      accent: 'bg-saffron-500 text-ink hover:bg-saffron-300',
+      accentText: 'text-saffron-300',
+      accent: 'bg-saffron-300 text-ink hover:bg-paper',
     },
   ];
 
   return (
-    <section id="achat-vente" className="relative overflow-hidden bg-saffron-300 py-24 md:py-32">
-      <div aria-hidden className="pointer-events-none absolute -right-32 top-10 h-[26rem] w-[26rem] rounded-full bg-terra-300/55" />
+    <section id="achat-vente" className="relative overflow-hidden bg-paper py-24 md:py-32">
+      <div aria-hidden className="pointer-events-none absolute -right-32 top-10 h-[26rem] w-[26rem] rounded-full bg-petrol-50" />
 
       <div className="relative mx-auto max-w-[1400px] px-6 md:px-10">
         <Reveal>

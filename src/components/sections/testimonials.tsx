@@ -4,9 +4,9 @@ import { Reveal } from '@/components/motion/tilt';
 import { useDict } from '@/lib/i18n';
 
 const style = [
-  { tilt: '-2.2deg', card: 'bg-saffron-300' },
-  { tilt: '1.6deg', card: 'bg-azure-300' },
-  { tilt: '-1.1deg', card: 'bg-terra-300' },
+  { tilt: '-2.2deg', card: 'bg-paper border border-ink/10' },
+  { tilt: '1.6deg', card: 'bg-paper border border-ink/10' },
+  { tilt: '-1.1deg', card: 'bg-paper border border-ink/10' },
 ];
 
 export default function Testimonials() {
@@ -14,10 +14,10 @@ export default function Testimonials() {
   const testimonials = d.testimonials.items.map((t, i) => ({ ...t, ...style[i] }));
 
   return (
-    <section className="relative overflow-hidden bg-paper py-24 md:py-32">
+    <section className="relative overflow-hidden bg-paper-2 py-24 md:py-32">
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 top-0 h-96 w-96 rounded-full bg-petrol-50" />
-        <div className="absolute -bottom-24 right-10 h-72 w-72 rounded-full bg-paper-2" />
+        <div className="absolute -left-40 top-0 h-96 w-96 rounded-full bg-paper/70" />
+        <div className="absolute -bottom-24 right-10 h-72 w-72 rounded-full bg-petrol-50/60" />
       </div>
 
       <div className="relative mx-auto max-w-[1400px] px-6 md:px-10">
@@ -36,7 +36,7 @@ export default function Testimonials() {
               >
                 <div className="mb-5 flex gap-1" aria-label={d.testimonials.starsLabel}>
                   {Array.from({ length: 5 }).map((_, s) => (
-                    <span key={s} className="text-ink/70" aria-hidden>&#9733;</span>
+                    <span key={s} className="text-saffron-700" aria-hidden>&#9733;</span>
                   ))}
                 </div>
                 <blockquote className="text-[17px] leading-relaxed text-ink">{t.quote}</blockquote>

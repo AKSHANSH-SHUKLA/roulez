@@ -25,8 +25,8 @@ export default function InsuranceBand() {
   }, []);
 
   return (
-    <section id="assurance" className="relative overflow-hidden bg-azure-700 py-24 text-paper md:py-32">
-      <div aria-hidden className="pointer-events-none absolute -left-24 bottom-0 h-[22rem] w-[22rem] rounded-full bg-azure-500/50" />
+    <section id="assurance" className="relative overflow-hidden bg-petrol-700 py-24 text-paper md:py-32">
+      <div aria-hidden className="pointer-events-none absolute -left-24 bottom-0 h-[22rem] w-[22rem] rounded-full bg-petrol-900/45" />
 
       <div className="relative mx-auto max-w-[1400px] px-6 md:px-10">
         <Reveal>
@@ -46,13 +46,13 @@ export default function InsuranceBand() {
               <div className="flex h-full flex-col rounded-[20px] bg-paper p-7 text-ink">
                 <h3 className="font-poster-md text-2xl">{(locale === 'en' && plan.nameEn) || plan.name}</h3>
                 <p className="mt-1 text-[14px] text-ink-2">{(locale === 'en' && plan.descriptionEn) || plan.description}</p>
-                <p className="nums mt-5 font-poster text-3xl text-azure-700">
+                <p className="nums mt-5 font-poster text-3xl text-petrol-700">
                   {plan.dailyPrice} EUR<span className="text-base font-medium text-ink-2">{d.common.perDay}</span>
                 </p>
                 <ul className="mt-5 space-y-2">
                   {((locale === 'en' && plan.coverageEn) || plan.coverage).map((c) => (
                     <li key={c} className="flex items-start gap-2 text-[14px] text-ink-2">
-                      <ShieldCheck size={15} className="mt-0.5 shrink-0 text-azure-500" />
+                      <ShieldCheck size={15} className="mt-0.5 shrink-0 text-petrol-500" />
                       {c}
                     </li>
                   ))}
@@ -64,7 +64,7 @@ export default function InsuranceBand() {
 
         <button
           onClick={() => setPage('insurance')}
-          className="pressable mt-10 flex items-center gap-2 rounded-[12px] bg-saffron-500 px-6 py-3.5 text-[15px] font-bold text-ink transition-colors duration-200 hover:bg-saffron-300"
+          className="pressable mt-10 flex items-center gap-2 rounded-[12px] bg-paper px-6 py-3.5 text-[15px] font-bold text-petrol-700 transition-colors duration-200 hover:bg-saffron-300 hover:text-ink"
         >
           {d.insuranceBand.cta}
           <ArrowUpRight size={17} />
